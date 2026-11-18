@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taller de Investigación de Operaciones — Programación Lineal (UTEQ)</title>
+
+  <!-- Google Fonts: Roboto & Roboto Mono + Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- KaTeX (Renderizado matemático ultra rápido) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Plotly.js (Gráficos interactivos con zoom, pan, hover y región factible) -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+  <!-- Highlight.js (Resaltado de código Python del Colab) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
+
+  <style>
+    :root {
+      /* Material Design 3 — Light Palette (Tonal Indigo / Teal) */
+      --md-primary: #1a56db;
+      --md-on-primary: #ffffff;
+      --md-primary-container: #dbeafe;
+      --md-on-primary-container: #1e3a8a;
+
+      --md-secondary: #0f766e;
+      --md-secondary-container: #ccfbf1;
+      --md-on-secondary-container: #115e59;
+
+      --md-tertiary: #b45309;
+      --md-tertiary-container: #fef3c7;
+      --md-on-tertiary-container: #78350f;
+
+      --md-surface: #f8fafc;
+      --md-surface-container-low: #ffffff;
+      --md-surface-container: #f1f5f9;
+      --md-surface-container-high: #e2e8f0;
+      --md-on-surface: #0f172a;
+      --md-on-surface-variant: #475569;
+      --md-outline: #cbd5e1;
+      --md-outline-variant: #e2e8f0;
+
+      --md-success-bg: #dcfce7;
+      --md-success-text: #166534;
+      --md-danger-bg: #fee2e2;
+      --md-danger-text: #991b1b;
+
+      --elevation-1: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --elevation-2: 0 4px 12px rgba(15, 23, 42, 0.08), 0 2px 4px rgba(15, 23, 42, 0.04);
+      --elevation-3: 0 10px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+    }
+
+    [data-theme="dark"] {
+      /* Material Design 3 — Dark Palette */
+      --md-primary: #93c5fd;
+      --md-on-primary: #0f172a;
+      --md-primary-container: #1e3a8a;
+      --md-on-primary-container: #dbeafe;
+
+      --md-secondary: #5eead4;
+      --md-secondary-container: #115e59;
+      --md-on-secondary-container: #ccfbf1;
+
+      --md-tertiary: #fcd34d;
+      --md-tertiary-container: #78350f;
+      --md-on-tertiary-container: #fef3c7;
+
+      --md-surface: #0b1120;
+      --md-surface-container-low: #111827;
+      --md-surface-container: #1e293b;
+      --md-surface-container-high: #334155;
+      --md-on-surface: #f1f5f9;
+      --md-on-surface-variant: #94a3b8;
+      --md-outline: #334155;
+      --md-outline-variant: #1e293b;
+
+      --md-success-bg: #064e3b;
+      --md-success-text: #6ee7b7;
+      --md-danger-bg: #7f1d1d;
+      --md-danger-text: #fca5a5;
+
+      --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.35);
+      --elevation-2: 0 4px 12px rgba(0, 0, 0, 0.45);
+      --elevation-3: 0 10px 25px -5px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--md-surface);
+      color: var(--md-on-surface);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    .font-mono-code {
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    /* Material Surface Cards */
+    .md-card {
+      background-color: var(--md-surface-container-low);
+      border: 1px solid var(--md-outline-variant);
+      border-radius: 20px;
+      box-shadow: var(--elevation-1);
+    }
+
+    .md-card-elevated {
+      background-color: var(--md-surface-container-low);
+      border: 1px solid var(--md-outline-variant);
+      border-radius: 24px;
+      box-shadow: var(--elevation-2);
+    }
+
+    /* Material Ripple Effect */
+    .md-ripple {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    /* Material Navigation Rail / Drawer */
+    .nav-pill {
+      border-radius: 9999px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--md-on-surface-variant);
+      cursor: pointer;
+      transition: all 0.18s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    .nav-pill:hover {
+      background-color: var(--md-surface-container);
+      color: var(--md-on-surface);
+    }
+
+    .nav-pill.active {
+      background-color: var(--md-primary-container);
+      color: var(--md-on-primary-container);
+      font-weight: 700;
+    }
+
+    /* Material Chips */
+    .md-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .chip-active {
+      background-color: var(--md-danger-bg);
+      color: var(--md-danger-text);
+    }
+
+    .chip-inactive {
+      background-color: var(--md-success-bg);
+      color: var(--md-success-text);
+    }
+
+    .chip-optimal {
+      background-color: var(--md-tertiary-container);
+      color: var(--md-on-tertiary-container);
+    }
+
+    /* Custom Range Slider (Material 3 Style) */
+    input[type="range"].md-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--md-surface-container-high);
+      outline: none;
+    }
+
+    input[type="range"].md-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--md-primary);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      border: 2px solid var(--md-surface-container-low);
+      transition: transform 0.15s ease;
+    }
+
+    input[type="range"].md-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.18);
+    }
+
+    /* Tables */
+    .md-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .md-table th {
+      background-color: var(--md-surface-container);
+      color: var(--md-on-surface-variant);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--md-outline);
+    }
+
+    .md-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--md-outline-variant);
+      vertical-align: middle;
+    }
+
+    .md-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .md-table tr.row-optimal {
+      background-color: color-mix(in srgb, var(--md-tertiary-container) 45%, transparent);
+      font-weight: 600;
+    }
+
+    .md-table tbody tr:hover {
+      background-color: color-mix(in srgb, var(--md-primary-container) 25%, transparent);
+    }
+
+    /* Tabs */
+    .md-tab-bar {
+      display: flex;
+      border-bottom: 1px solid var(--md-outline-variant);
+      gap: 8px;
+      overflow-x: auto;
+    }
+
+    .md-tab {
+      padding: 12px 18px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--md-on-surface-variant);
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .md-tab:hover {
+      color: var(--md-on-surface);
+      background-color: var(--md-surface-container);
+      border-radius: 12px 12px 0 0;
+    }
+
+    .md-tab.active {
+      color: var(--md-primary);
+      border-bottom-color: var(--md-primary);
+      font-weight: 700;
+    }
+
+    /* Snackbar / Toast */
+    #md-snackbar {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: #1e293b;
+      color: #f8fafc;
+      padding: 14px 20px;
+      border-radius: 12px;
+      box-shadow: var(--elevation-3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      z-index: 9999;
+      transform: translateY(120%);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    #md-snackbar.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Print optimization */
+    @media print {
+      aside, header, #md-snackbar, .no-print {
+        display: none !important;
+      }
+      main {
+        margin-left: 0 !important;
+        padding: 0 !important;
+      }
+      .md-card, .md-card-elevated {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP APP BAR (Material Design 3) -->
+  <header class="sticky top-0 z-40 border-b" style="background-color: var(--md-surface-container-low); border-color: var(--md-outline-variant);">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-full hover:bg-slate-200/50" aria-label="Menú">
+          <span class="material-symbols-rounded">menu</span>
+        </button>
+        <div class="w-10 h-10 rounded-2xl flex items-center justify-center font-bold shadow-sm" style="background-color: var(--md-primary); color: var(--md-on-primary);">
+          <span class="material-symbols-rounded">analytics</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base sm:text-lg font-bold tracking-tight leading-none">Investigación de Operaciones</h1>
+            <span class="hidden sm:inline-flex text-xs px-2.5 py-0.5 rounded-full font-semibold" style="background-color: var(--md-primary-container); color: var(--md-on-primary-container);">UTEQ • 7mo "A"</span>
+          </div>
+          <p class="text-xs mt-0.5" style="color: var(--md-on-surface-variant);">Programación Lineal — Método Gráfico Interactivo (7 Ejercicios)</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="openCoverModal()" class="px-3 py-2 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1.5 border hover:opacity-90" style="border-color: var(--md-outline); background-color: var(--md-surface-container);">
+          <span class="material-symbols-rounded text-base">school</span>
+          <span class="hidden md:inline">Portada Institucional</span>
+        </button>
+
+        <button onclick="window.print()" class="no-print px-3 py-2 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1.5 border hover:opacity-90" style="border-color: var(--md-outline); background-color: var(--md-surface-container);" title="Imprimir o guardar como PDF">
+          <span class="material-symbols-rounded text-base">print</span>
+          <span class="hidden md:inline">Imprimir</span>
+        </button>
+
+        <button id="theme-toggle" class="p-2.5 rounded-full border hover:opacity-90" style="border-color: var(--md-outline); background-color: var(--md-surface-container);" title="Cambiar tema Claro / Oscuro">
+          <span id="theme-icon" class="material-symbols-rounded text-xl block">dark_mode</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <div class="max-w-[1440px] mx-auto flex">
+
+    <!-- NAVIGATION DRAWER (Desktop + Mobile Overlay) -->
+    <aside id="nav-drawer" class="fixed lg:sticky top-16 left-0 z-30 h-[calc(100vh-4rem)] w-72 shrink-0 border-r p-4 overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-200" style="background-color: var(--md-surface-container-low); border-color: var(--md-outline-variant);">
+      
+      <!-- Student Mini Card -->
+      <div class="p-3.5 rounded-2xl mb-4 border" style="background-color: var(--md-surface-container); border-color: var(--md-outline-variant);">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm shrink-0" style="background-color: var(--md-secondary); color: #fff;">
+            MD
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs font-bold truncate">Miguel Roberth Díaz Z.</p>
+            <p class="text-[11px] truncate" style="color: var(--md-on-surface-variant);">Ing. en Telemática • 18/11/2026</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="px-3 text-[11px] font-bold uppercase tracking-wider mb-2" style="color: var(--md-on-surface-variant);">Vista General</p>
+      <div id="nav-overview" class="nav-pill mb-4" onclick="selectView('overview')">
+        <span class="material-symbols-rounded text-xl">dashboard</span>
+        <span>Resumen & Comparativa</span>
+      </div>
+
+      <p class="px-3 text-[11px] font-bold uppercase tracking-wider mb-2" style="color: var(--md-on-surface-variant);">Ejercicios Resueltos (1 – 7)</p>
+      <nav id="exercise-nav-list" class="space-y-1">
+        <!-- Populated dynamically by JS -->
+      </nav>
+
+      <div class="mt-6 p-3.5 rounded-2xl border text-xs" style="background-color: color-mix(in srgb, var(--md-primary-container) 35%, transparent); border-color: var(--md-outline-variant);">
+        <p class="font-bold flex items-center gap-1.5 mb-1" style="color: var(--md-primary);">
+          <span class="material-symbols-rounded text-base">touch_app</span> Modo Interactivo
+        </p>
+        <p style="color: var(--md-on-surface-variant);">Haz zoom en los gráficos, mueve los deslizadores de <b>$(x_1, x_2)$</b> para simular puntos factibles en tiempo real o copia el código Python.</p>
+      </div>
+    </aside>
+
+    <!-- BACKDROP FOR MOBILE DRAWER -->
+    <div id="drawer-backdrop" class="fixed inset-0 bg-black/40 z-20 hidden lg:hidden" onclick="toggleDrawer(false)"></div>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 space-y-6">
+      
+      <!-- VIEW 1: OVERVIEW DASHBOARD -->
+      <section id="view-overview" class="space-y-6 hidden">
+        <!-- Institutional Hero Banner -->
+        <div class="md-card-elevated p-6 sm:p-8 relative overflow-hidden">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div class="space-y-2 max-w-3xl">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold" style="background-color: var(--md-secondary-container); color: var(--md-on-secondary-container);">
+                <span class="material-symbols-rounded text-sm">account_balance</span>
+                Universidad Técnica Estatal de Quevedo (UTEQ)
+              </div>
+              <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">Taller de Investigación de Operaciones</h2>
+              <p class="text-sm sm:text-base" style="color: var(--md-on-surface-variant);">
+                Resolución formal de 7 modelos de Programación Lineal mediante el <b>Método Gráfico</b>, análisis de vértices de la región factible, evaluación de holguras ($s_i$) y excedentes ($e_i$), e interpretación operativa de casos especiales.
+              </p>
+            </div>
+            <div class="shrink-0 grid grid-cols-2 gap-3 text-center">
+              <div class="p-4 rounded-2xl border" style="background-color: var(--md-surface-container); border-color: var(--md-outline-variant);">
+                <p class="text-2xl font-bold" style="color: var(--md-primary);">7</p>
+                <p class="text-xs font-medium" style="color: var(--md-on-surface-variant);">Modelos PL</p>
+              </div>
+              <div class="p-4 rounded-2xl border" style="background-color: var(--md-surface-container); border-color: var(--md-outline-variant);">
+                <p class="text-2xl font-bold" style="color: var(--md-secondary);">100%</p>
+                <p class="text-xs font-medium" style="color: var(--md-on-surface-variant);">Interactivos</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Academic Metadata Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-6 pt-6 border-t" style="border-color: var(--md-outline-variant);">
+            <div class="p-3 rounded-xl" style="background-color: var(--md-surface-container);">
+              <p class="text-[11px] uppercase font-bold" style="color: var(--md-on-surface-variant);">Estudiante</p>
+              <p class="text-sm font-semibold mt-0.5">Miguel Roberth Díaz Zambrano</p>
+            </div>
+            <div class="p-3 rounded-xl" style="background-color: var(--md-surface-container);">
+              <p class="text-[11px] uppercase font-bold" style="color: var(--md-on-surface-variant);">Docente</p>
+              <p class="text-sm font-semibold mt-0.5">Ing. Angel Ivan Torres Quijije</p>
+            </div>
+            <div class="p-3 rounded-xl" style="background-color: var(--md-surface-container);">
+              <p class="text-[11px] uppercase font-bold" style="color: var(--md-on-surface-variant);">Carrera / Nivel</p>
+              <p class="text-sm font-semibold mt-0.5">Ing. en Telemática • 7to "A"</p>
+            </div>
+            <div class="p-3 rounded-xl" style="background-color: var(--md-surface-container);">
+              <p class="text-[11px] uppercase font-bold" style="color: var(--md-on-surface-variant);">Fecha de Entrega</p>
+              <p class="text-sm font-semibold mt-0.5">18 de Noviembre de 2026</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Master Summary Table -->
+        <div class="md-card p-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+            <div>
+              <h3 class="text-lg font-bold flex items-center gap-2">
+                <span class="material-symbols-rounded" style="color: var(--md-primary);">table_chart</span>
+                Matriz Consolidada de Resultados Óptimos
+              </h3>
+              <p class="text-xs" style="color: var(--md-on-surface-variant);">Haz clic en cualquier ejercicio para abrir su gráfico interactivo y simulador.</p>
+            </div>
+          </div>
+          <div class="overflow-x-auto rounded-xl border" style="border-color: var(--md-outline-variant);">
+            <table class="md-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Problema Aplicado</th>
+                  <th>Función Objetivo</th>
+                  <th>Punto Óptimo $(x_1^*, x_2^*)$</th>
+                  <th>Utilidad Máx. ($Z^*$)</th>
+                  <th>Particularidad del Modelo</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="overview-table-body">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: EXERCISE DETAIL WORKSPACE -->
+      <section id="view-exercise" class="space-y-6">
+        
+        <!-- Exercise Header Card -->
+        <div class="md-card-elevated p-5 sm:p-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="space-y-1.5">
+              <div class="flex flex-wrap items-center gap-2">
+                <span id="ex-badge" class="px-3 py-1 rounded-full text-xs font-bold" style="background-color: var(--md-primary); color: var(--md-on-primary);">EJERCICIO 1</span>
+                <span id="ex-tag" class="md-chip chip-optimal">Solución Única</span>
+              </div>
+              <h2 id="ex-title" class="text-xl sm:text-2xl font-bold tracking-tight">Taller de Servicio Técnico</h2>
+              <p id="ex-subtitle" class="text-sm" style="color: var(--md-on-surface-variant);">Maximización de beneficios semanales en reparación de laptops y celulares.</p>
+            </div>
+
+            <!-- Prev / Next Navigation Buttons -->
+            <div class="flex items-center gap-2 shrink-0">
+              <button id="btn-prev-ex" onclick="navigateExercise(-1)" class="px-3.5 py-2 rounded-full border text-sm font-medium flex items-center gap-1 hover:opacity-80 disabled:opacity-40" style="border-color: var(--md-outline); background-color: var(--md-surface-container);">
+                <span class="material-symbols-rounded text-lg">arrow_back</span> Anterior
+              </button>
+              <button id="btn-next-ex" onclick="navigateExercise(1)" class="px-3.5 py-2 rounded-full text-sm font-medium flex items-center gap-1 hover:opacity-90 disabled:opacity-40" style="background-color: var(--md-primary); color: var(--md-on-primary);">
+                Siguiente <span class="material-symbols-rounded text-lg">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Strip -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5 pt-5 border-t" style="border-color: var(--md-outline-variant);">
+            <div class="p-3.5 rounded-2xl border flex items-center gap-3" style="background-color: var(--md-surface-container); border-color: var(--md-outline-variant);">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background-color: var(--md-primary-container); color: var(--md-on-primary-container);">
+                <span class="material-symbols-rounded">my_location</span>
+              </div>
+              <div>
+                <p class="text-xs font-medium" style="color: var(--md-on-surface-variant);">Punto Óptimo $(x_1^*, x_2^*)$</p>
+                <p id="kpi-point" class="text-base sm:text-lg font-bold">B(15, 10)</p>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-2xl border flex items-center gap-3" style="background-color: var(--md-surface-container); border-color: var(--md-outline-variant);">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background-color: var(--md-tertiary-container); color: var(--md-on-tertiary-container);">
+                <span class="material-symbols-rounded">payments</span>
+              </div>
+              <div>
+                <p class="text-xs font-medium" style="color: var(--md-on-surface-variant);">Beneficio Máximo ($Z^*$)</p>
+                <p id="kpi-z" class="text-base sm:text-lg font-bold">$450 USD / sem</p>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-2xl border flex items-center gap-3" style="background-color: var(--md-surface-container); border-color: var(--md-outline-variant);">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background-color: var(--md-secondary-container); color: var(--md-on-secondary-container);">
+                <span class="material-symbols-rounded">tune</span>
+              </div>
+              <div class="min-w-0">
+                <p class="text-xs font-medium" style="color: var(--md-on-surface-variant);">Recursos Críticos (Activos)</p>
+                <p id="kpi-active" class="text-sm font-bold truncate">Técnico y Diagnóstico (100%)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- INTERACTIVE GRAPH + LIVE SIMULATOR GRID -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+          
+          <!-- Left 7 Cols: Interactive Plotly Chart -->
+          <div class="xl:col-span-7 md-card p-4 sm:p-5 flex flex-col">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <h3 class="text-base font-bold flex items-center gap-2">
+                <span class="material-symbols-rounded" style="color: var(--md-primary);">monitoring</span>
+                Región Factible y Rectas de Restricción
+              </h3>
+              <div class="flex items-center gap-2">
+                <label class="inline-flex items-center gap-1.5 text-xs font-medium cursor-pointer px-2.5 py-1 rounded-full border" style="border-color: var(--md-outline); background-color: var(--md-surface-container);">
+                  <input type="checkbox" id="toggle-isoprofit" checked onchange="updatePlotWithSim()" class="accent-blue-600">
+                  <span>Línea Iso-Utilidad $Z$</span>
+                </label>
+                <button onclick="resetPlotZoom()" class="text-xs px-2.5 py-1 rounded-full border font-medium hover:opacity-80" style="border-color: var(--md-outline); background-color: var(--md-surface-container);" title="Restaurar vista">
+                  Centrar
+                </button>
+              </div>
+            </div>
+            <div id="plotly-canvas" class="w-full h-[430px] sm:h-[470px] rounded-xl overflow-hidden"></div>
+            <p class="text-[11px] mt-2 text-center" style="color: var(--md-on-surface-variant);">
+              💡 Pasa el cursor sobre los vértices o mueve los controles de la derecha para evaluar cualquier punto $(x_1, x_2)$ en el plano.
+            </p>
+          </div>
+
+          <!-- Right 5 Cols: What-If Interactive Point Simulator -->
+          <div class="xl:col-span-5 md-card p-5 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-1">
+                <h3 class="text-base font-bold flex items-center gap-2">
+                  <span class="material-symbols-rounded" style="color: var(--md-secondary);">science</span>
+                  Simulador "What-If" en Vivo
+                </h3>
+                <button onclick="snapToOptimal()" class="text-xs px-3 py-1 rounded-full font-bold flex items-center gap-1" style="background-color: var(--md-tertiary-container); color: var(--md-on-tertiary-container);">
+                  <span class="material-symbols-rounded text-sm">emoji_events</span> Ir al Óptimo
+                </button>
+              </div>
+              <p class="text-xs mb-4" style="color: var(--md-on-surface-variant);">Desliza los valores de producción/servicio para comprobar factibilidad, utilidad $Z$ y consumo de recursos en tiempo real.</p>
+
+              <!-- Sliders -->
+              <div class="space-y-4 p-4 rounded-2xl border" style="background-color: var(--md-surface-container); border-color: var(--md-outline-variant);">
+                <div>
+                  <div class="flex justify-between text-xs font-bold mb-1.5">
+                    <span id="sim-x1-label">$x_1$ (Laptops):</span>
+                    <span id="sim-x1-val" class="px-2 py-0.5 rounded font-mono-code" style="background-color: var(--md-primary-container); color: var(--md-on-primary-container);">15</span>
+                  </div>
+                  <input type="range" id="sim-x1-slider" class="md-slider" min="0" max="40" step="1" value="15" oninput="onSliderChange()">
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs font-bold mb-1.5">
+                    <span id="sim-x2-label">$x_2$ (Celulares):</span>
+                    <span id="sim-x2-val" class="px-2 py-0.5 rounded font-mono-code" style="background-color: var(--md-primary-container); color: var(--md-on-primary-container);">10</span>
+                  </div>
+                  <input type="range" id="sim-x2-slider" class="md-slider" min="0" max="40" step="1" value="10" oninput="onSliderChange()">
+                </div>
+              </div>
+
+              <!-- Live Feasibility & Z Result Box -->
+              <div id="sim-status-box" class="mt-4 p-4 rounded-2xl border flex items-center justify-between gap-3">
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-wider" id="sim-feasibility-badge">✅ PUNTO FACTIBLE ÓPTIMO</p>
+                  <p class="text-xs mt-0.5" id="sim-formula-eval">Z = 20(15) + 15(10)</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-[11px] uppercase font-semibold opacity-80">Utilidad Z</p>
+                  <p id="sim-z-result" class="text-xl font-bold font-mono-code">$450</p>
+                </div>
+              </div>
+
+              <!-- Live Resource Progress Bars -->
+              <div class="mt-4 space-y-2.5">
+                <p class="text-xs font-bold uppercase tracking-wider" style="color: var(--md-on-surface-variant);">Consumo de Restricciones en este punto</p>
+                <div id="sim-constraints-bars" class="space-y-2.5">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DETAIL TABS CARD (Modelo, Vértices, Holguras, Código Python) -->
+        <div class="md-card overflow-hidden">
+          <div class="md-tab-bar px-4 pt-2" style="background-color: var(--md-surface-container-low);">
+            <button class="md-tab active" data-tab="model" onclick="switchTab('model')">
+              <span class="material-symbols-rounded text-lg">functions</span> a) Modelo Matemático
+            </button>
+            <button class="md-tab" data-tab="vertices" onclick="switchTab('vertices')">
+              <span class="material-symbols-rounded text-lg">polyline</span> b) Vértices Factibles
+            </button>
+            <button class="md-tab" data-tab="analysis" onclick="switchTab('analysis')">
+              <span class="material-symbols-rounded text-lg">fact_check</span> c) Decisión, Holguras e Interpretación
+            </button>
+            <button class="md-tab" data-tab="python" onclick="switchTab('python')">
+              <span class="material-symbols-rounded text-lg">code</span> Código Python (Colab)
+            </button>
+          </div>
+
+          <div class="p-5 sm:p-6">
+            <!-- TAB 1: MATHEMATICAL MODEL -->
+            <div id="tab-model" class="tab-panel space-y-5">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                  <div class="p-4 rounded-2xl border" style="background-color: var(--md-surface-container); border-color: var(--md-outline-variant);">
+                    <h4 class="text-xs font-bold uppercase tracking-wider mb-2" style="color: var(--md-primary);">Variables de Decisión</h4>
+                    <ul id="model-vars-list" class="space-y-2 text-sm"></ul>
+                  </div>
+
+                  <div class="p-4 rounded-2xl border" style="background-color: var(--md-surface-container); border-color: var(--md-outline-variant);">
+                    <h4 class="text-xs font-bold uppercase tracking-wider mb-2" style="color: var(--md-primary);">Formulación Canónica</h4>
+                    <div id="model-math-block" class="overflow-x-auto py-1 text-sm sm:text-base"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 class="text-xs font-bold uppercase tracking-wider mb-2" style="color: var(--md-primary);">Desglose de Restricciones y Recursos</h4>
+                  <div class="overflow-x-auto rounded-xl border" style="border-color: var(--md-outline-variant);">
+                    <table class="md-table">
+                      <thead>
+                        <tr>
+                          <th>Recurso / Límite</th>
+                          <th>Expresión Matemática</th>
+                          <th>Disponibilidad / Meta</th>
+                        </tr>
+                      </thead>
+                      <tbody id="model-constraints-table"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 2: VERTICES EVALUATION -->
+            <div id="tab-vertices" class="tab-panel hidden space-y-4">
+              <p id="vertices-intro" class="text-sm" style="color: var(--md-on-surface-variant);"></p>
+              <div class="overflow-x-auto rounded-xl border" style="border-color: var(--md-outline-variant);">
+                <table class="md-table">
+                  <thead>
+                    <tr>
+                      <th>Vértice $(x_1, x_2)$</th>
+                      <th>Cálculo de la Función Objetivo $Z$</th>
+                      <th>Utilidad $Z$ (USD)</th>
+                      <th>Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody id="vertices-table-body"></tbody>
+                </table>
+              </div>
+              <div id="vertices-special-note" class="hidden p-4 rounded-2xl border text-sm" style="background-color: var(--md-tertiary-container); color: var(--md-on-tertiary-container); border-color: var(--md-tertiary);"></div>
+            </div>
+
+            <!-- TAB 3: DECISION, SLACKS & INTERPRETATION -->
+            <div id="tab-analysis" class="tab-panel hidden space-y-5">
+              <!-- Optimal Decision Callout -->
+              <div class="p-4 sm:p-5 rounded-2xl border-l-4" style="background-color: var(--md-surface-container); border-left-color: var(--md-primary); border-top: 1px solid var(--md-outline-variant); border-right: 1px solid var(--md-outline-variant); border-bottom: 1px solid var(--md-outline-variant);">
+                <h4 class="text-sm font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style="color: var(--md-primary);">
+                  <span class="material-symbols-rounded text-lg">verified</span> 1. Decisión Óptima
+                </h4>
+                <div id="analysis-decision" class="text-sm space-y-1.5"></div>
+              </div>
+
+              <!-- Slacks Table -->
+              <div>
+                <h4 class="text-sm font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1.5" style="color: var(--md-secondary);">
+                  <span class="material-symbols-rounded text-lg">balance</span> 2. Análisis de Holguras ($s_i$) y Excedentes ($e_i$)
+                </h4>
+                <div id="analysis-slacks-container" class="space-y-4"></div>
+              </div>
+
+              <!-- Managerial Interpretation -->
+              <div class="p-4 sm:p-5 rounded-2xl border" style="background-color: color-mix(in srgb, var(--md-secondary-container) 35%, transparent); border-color: var(--md-outline-variant);">
+                <h4 class="text-sm font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style="color: var(--md-secondary);">
+                  <span class="material-symbols-rounded text-lg">lightbulb</span> 3. Interpretación Operativa para la Gerencia
+                </h4>
+                <div id="analysis-interpretation" class="text-sm leading-relaxed space-y-2"></div>
+              </div>
+            </div>
+
+            <!-- TAB 4: PYTHON CODE -->
+            <div id="tab-python" class="tab-panel hidden space-y-3">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-medium" style="color: var(--md-on-surface-variant);">Código fuente original ejecutado en Google Colab (NumPy + Matplotlib):</p>
+                <button onclick="copyPythonCode()" class="px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5" style="background-color: var(--md-primary); color: var(--md-on-primary);">
+                  <span class="material-symbols-rounded text-sm">content_copy</span> Copiar Código
+                </button>
+              </div>
+              <pre class="rounded-2xl overflow-x-auto text-xs sm:text-sm m-0"><code id="python-code-block" class="language-python"></code></pre>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <!-- INSTITUTIONAL COVER MODAL -->
+  <div id="cover-modal" class="fixed inset-0 z-50 bg-black/50 hidden items-center justify-center p-4" onclick="if(event.target===this) closeCoverModal()">
+    <div class="md-card-elevated max-w-2xl w-full p-6 sm:p-8 space-y-5 relative animate-fade-in">
+      <button onclick="closeCoverModal()" class="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-200/50">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+      <div class="text-center space-y-1.5">
+        <div class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-3" style="background-color: var(--md-primary); color: var(--md-on-primary);">
+          <span class="material-symbols-rounded text-3xl">school</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold">Universidad Técnica Estatal de Quevedo</h2>
+        <p class="text-sm font-medium" style="color: var(--md-primary);">Facultad de Ciencias de la Computación • Ingeniería en Telemática</p>
+        <div class="pt-2">
+          <span class="px-3 py-1 rounded-full text-xs font-bold" style="background-color: var(--md-secondary-container); color: var(--md-on-secondary-container);">TALLER DE INVESTIGACIÓN DE OPERACIONES</span>
+        </div>
+      </div>
+
+      <div class="overflow-hidden rounded-xl border" style="border-color: var(--md-outline-variant);">
+        <table class="md-table">
+          <tbody>
+            <tr><td class="font-bold w-44">👤 Estudiante:</td><td>Miguel Roberth Díaz Zambrano</td></tr>
+            <tr><td class="font-bold">📚 Asignatura:</td><td>Investigación de Operaciones</td></tr>
+            <tr><td class="font-bold">👨‍🏫 Docente:</td><td>Ing. Angel Ivan Torres Quijije</td></tr>
+            <tr><td class="font-bold">🏫 Curso / Paralelo:</td><td>7to Semestre — Paralelo "A"</td></tr>
+            <tr><td class="font-bold">📅 Fecha de Entrega:</td><td>18 de Noviembre de 2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="text-xs leading-relaxed p-3.5 rounded-xl border" style="background-color: var(--md-surface-container); border-color: var(--md-outline-variant); color: var(--md-on-surface-variant);">
+        <b>Objetivo del Cuaderno:</b> Formular, graficar y resolver problemas aplicados de optimización lineal restringida mediante el Método Gráfico, evaluando los vértices de la región factible, el análisis de holguras ($s_i$) y excedentes ($e_i$), e interpretando casos especiales como soluciones múltiples y restricciones redundantes.
+      </p>
+    </div>
+  </div>
+
+  <!-- MATERIAL SNACKBAR -->
+  <div id="md-snackbar">
+    <span class="material-symbols-rounded text-emerald-400">check_circle</span>
+    <span id="snackbar-text">Acción completada</span>
+  </div>
+
+  <script>
+    // =========================================================================
+    // DATASET DE LOS 7 EJERCICIOS (EXTRAÍDOS ÍNTEGRAMENTE DEL COLAB)
+    // =========================================================================
+    const EXERCISES = [
+      {
+        id: 1,
+        shortTitle: "Taller de Servicio Técnico",
+        title: "Ejercicio 1: Taller de Servicio Técnico",
+        subtitle: "Maximización de beneficios semanales en reparación de laptops y celulares.",
+        icon: "laptop_mac",
+        tag: "Solución Única",
+        tagType: "optimal",
+        x1Name: "Laptops",
+        x2Name: "Celulares",
+        x1Unit: "unidades",
+        x2Unit: "unidades",
+        c1: 20,
+        c2: 15,
+        zUnit: "USD / sem",
+        optimalPoint: [15, 10],
+        optimalPointLabel: "B(15, 10)",
+        optimalZ: 450,
+        activeSummary: "Técnico y Diagnóstico (100%)",
+        xRange: [0, 25],
+        yRange: [0, 27],
+        sliderMax: [25, 25],
+        sliderStep: 1,
+        variables: [
+          "$x_1 \in \mathbb{R}^+$: Cantidad de <b>laptops</b> a reparar por semana.",
+          "$x_2 \in \mathbb{R}^+$: Cantidad de <b>celulares</b> a reparar por semana."
+        ],
+        mathLatex: `$$\begin{array}{ll}
+          \textbf{Maximizar:} & Z = 20x_1 + 15x_2 \\[6pt]
+          \textbf{Sujeto a:} & 2x_1 + 1x_2 \leq 40 \quad \text{(Tiempo de Técnico)} \\[3pt]
+          & 1x_1 + 1x_2 \leq 25 \quad \text{(Tiempo de Diagnóstico)} \\[3pt]
+          & x_2 \leq 20 \quad \text{(Límite de Repuestos para Celulares)} \\[3pt]
+          & x_1, x_2 \geq 0 \quad \text{(Condición de no negatividad)}
+        \end{array}$$`,
+        constraints: [
+          { name: "🔧 Tiempo de Técnico", expr: "$2x_1 + 1x_2 \leq 40$", limit: "40 horas / semana", a1: 2, a2: 1, rhs: 40, type: "<=", unit: "hrs", color: "#2563eb" },
+          { name: "🔍 Tiempo de Diagnóstico", expr: "$1x_1 + 1x_2 \leq 25$", limit: "25 horas / semana", a1: 1, a2: 1, rhs: 25, type: "<=", unit: "hrs", color: "#dc2626" },
+          { name: "📱 Repuestos Celulares", expr: "$x_2 \leq 20$", limit: "20 unidades / semana", a1: 0, a2: 1, rhs: 20, type: "<=", unit: "repuestos", color: "#16a34a" }
+        ],
+        feasiblePolygon: [[0,0], [20,0], [15,10], [5,20], [0,20]],
+        verticesIntro: "La región de soluciones factibles está acotada por la intersección de las restricciones del taller. Evaluamos $Z(x_1, x_2) = 20x_1 + 15x_2$ en cada vértice:",
+        vertices: [
+          { label: "(0, 0)", x: 0, y: 0, calc: "$Z = 20(0) + 15(0)$", z: "0 USD", status: "Factible", optimal: false },
+          { label: "(20, 0)", x: 20, y: 0, calc: "$Z = 20(20) + 15(0)$", z: "400 USD", status: "Factible", optimal: false },
+          { label: "B(15, 10)", x: 15, y: 10, calc: "$Z = 20(15) + 15(10)$", z: "450 USD", status: "🏆 Óptimo", optimal: true },
+          { label: "C(5, 20)", x: 5, y: 20, calc: "$Z = 20(5) + 15(20)$", z: "400 USD", status: "Factible", optimal: false },
+          { label: "D(0, 20)", x: 0, y: 20, calc: "$Z = 20(0) + 15(20)$", z: "300 USD", status: "Factible", optimal: false }
+        ],
+        decisionHtml: `
+          <p>De acuerdo con el teorema fundamental de la programación lineal, la solución óptima se encuentra en el vértice <b>$B(15, 10)$</b>:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><b>Reparación semanal de laptops ($x_1^*$):</b> $15\text{ unidades}$</li>
+            <li><b>Reparación semanal de celulares ($x_2^*$):</b> $10\text{ unidades}$</li>
+            <li><b>Utilidad máxima ($Z^*$):</b> <b>450 USD semanales</b></li>
+          </ul>`,
+        slacksTables: [
+          {
+            subtitle: null,
+            rows: [
+              { name: "Tiempo de Técnico ($s_1$)", calc: "$40 - [2(15) + 1(10)]$", val: "0 hrs", active: true, badge: "🔴 Activa", interp: "Se consume el <b>100 %</b> de las 40 horas técnicas disponibles." },
+              { name: "Tiempo de Diagnóstico ($s_2$)", calc: "$25 - [1(15) + 1(10)]$", val: "0 hrs", active: true, badge: "🔴 Activa", interp: "Se agotan las 25 horas semanales de diagnóstico." },
+              { name: "Repuestos Celulares ($s_3$)", calc: "$20 - 10$", val: "10 repuestos", active: false, badge: "🟢 No activa", interp: "Queda un <b>excedente en inventario</b> de 10 repuestos sin usar." }
+            ]
+          }
+        ],
+        interpretationHtml: `<p>El taller alcanza su máxima rentabilidad semanal (<b>450 USD</b>) cuando logra equilibrar el tiempo del personal técnico y el área de diagnóstico, llevando ambas capacidades al <b>100 % de ocupación</b>. Aunque el inventario permite reparar hasta 20 celulares, hacerlo obligaría a sacrificar reparaciones de laptops (que dejan mayor margen unitario: 20 USD frente a 15 USD), reduciendo la ganancia total a 400 USD en el vértice $C(5, 20)$.</p>`,
+        pythonCode: `import numpy as np
+import matplotlib.pyplot as plt
+
+# Definir el rango para x1 (Laptops)
+x1 = np.linspace(0, 30, 400)
+
+# Restricciones despejadas para x2 (Celulares)
+x2_tecnico = 40 - 2*x1        # 2x1 + x2 <= 40
+x2_diagnostico = 25 - x1      # x1 + x2 <= 25
+x2_repuestos = np.ones_like(x1) * 20  # x2 <= 20
+
+plt.figure(figsize=(10, 8))
+plt.xlim(-1, 25)
+plt.ylim(-1, 27)
+plt.xlabel('$x_1$ (Laptops)', fontsize=12)
+plt.ylabel('$x_2$ (Celulares)', fontsize=12)
+plt.title('Ejercicio 1: Taller de Servicio Técnico - Método Gráfico', fontsize=14, fontweight='bold')
+
+plt.plot(x1, x2_tecnico, label=r'Técnico: $2x_1 + x_2 \leq 40$', color='blue', linestyle='--')
+plt.plot(x1, x2_diagnostico, label=r'Diagnóstico: $x_1 + x_2 \leq 25$', color='red', linestyle='--')
+plt.axhline(20, label=r'Repuestos Celulares: $x_2 \leq 20$', color='green', linestyle='--')
+
+vertices = {
+    '(0,0)': (0, 0),
+    '(20,0)': (20, 0),
+    'B(15,10) Óptimo': (15, 10),
+    'C(5,20)': (5, 20),
+    'D(0,20)': (0, 20)
+}
+
+x2_factible = np.clip(np.minimum(np.minimum(x2_tecnico, x2_diagnostico), 20), 0, None)
+plt.fill_between(x1, 0, x2_factible, where=(x1 <= 20), color='gray', alpha=0.3, label='Región Factible')
+
+for label, (px, py) in vertices.items():
+    if 'Óptimo' in label:
+        plt.plot(px, py, 'go', markersize=10, label='Punto Óptimo (15, 10)')
+        plt.annotate(f"{label}\nZ = $450", (px, py), textcoords="offset points", xytext=(12,12), fontweight='bold', color='green')
+    else:
+        plt.plot(px, py, 'ko', markersize=6)
+        plt.annotate(label, (px, py), textcoords="offset points", xytext=(5,5))
+
+plt.grid(True, linestyle=':', alpha=0.5)
+plt.legend(loc='upper right')
+plt.show()`
+      },
+      {
+        id: 2,
+        shortTitle: "Patch Cords de Red",
+        title: "Ejercicio 2: Patch Cords de Red",
+        subtitle: "Optimización de manufactura semanal de cajas Cat6 y Cat6A.",
+        icon: "settings_ethernet",
+        tag: "Solución Única",
+        tagType: "optimal",
+        x1Name: "Cajas Cat6",
+        x2Name: "Cajas Cat6A",
+        x1Unit: "cajas",
+        x2Unit: "cajas",
+        c1: 40,
+        c2: 60,
+        zUnit: "USD / sem",
+        optimalPoint: [20, 20],
+        optimalPointLabel: "C(20, 20)",
+        optimalZ: 2000,
+        activeSummary: "Crimpado y Certificación (100%)",
+        xRange: [0, 45],
+        yRange: [0, 45],
+        sliderMax: [40, 40],
+        sliderStep: 1,
+        variables: [
+          "$x_1 \in \mathbb{R}^+$: Cantidad de cajas de patch cords <b>Cat6</b> a producir semanalmente.",
+          "$x_2 \in \mathbb{R}^+$: Cantidad de cajas de patch cords <b>Cat6A</b> a producir semanalmente."
+        ],
+        mathLatex: `$$\begin{array}{ll}
+          \textbf{Maximizar:} & Z = 40x_1 + 60x_2 \\[6pt]
+          \textbf{Sujeto a:} & x_1 + 2x_2 \leq 60 \quad \text{(Restricción de Crimpado)} \\[3pt]
+          & 2x_1 + 2x_2 \leq 80 \quad \text{(Restricción de Certificación)} \\[3pt]
+          & x_1 \leq 30 \quad \text{(Restricción de Conectores Cat6)} \\[3pt]
+          & x_1, x_2 \geq 0 \quad \text{(Condición de no negatividad)}
+        \end{array}$$`,
+        constraints: [
+          { name: "🔌 Proceso de Crimpado", expr: "$x_1 + 2x_2 \leq 60$", limit: "60 horas / semana", a1: 1, a2: 2, rhs: 60, type: "<=", unit: "hrs", color: "#2563eb" },
+          { name: "🧪 Proceso de Certificación", expr: "$2x_1 + 2x_2 \leq 80$", limit: "80 horas / semana", a1: 2, a2: 2, rhs: 80, type: "<=", unit: "hrs", color: "#dc2626" },
+          { name: "📦 Conectores Cat6", expr: "$x_1 \leq 30$", limit: "30 cajas / semana", a1: 1, a2: 0, rhs: 30, type: "<=", unit: "cajas", color: "#16a34a" }
+        ],
+        feasiblePolygon: [[0,0], [30,0], [30,10], [20,20], [0,30]],
+        verticesIntro: "La región de soluciones factibles está acotada por los puntos de intersección de las restricciones activas. Evaluamos $Z(x_1, x_2) = 40x_1 + 60x_2$ en cada vértice:",
+        vertices: [
+          { label: "(0, 0)", x: 0, y: 0, calc: "$Z = 40(0) + 60(0)$", z: "0 USD", status: "Factible", optimal: false },
+          { label: "(30, 0)", x: 30, y: 0, calc: "$Z = 40(30) + 60(0)$", z: "1,200 USD", status: "Factible", optimal: false },
+          { label: "B(30, 10)", x: 30, y: 10, calc: "$Z = 40(30) + 60(10)$", z: "1,800 USD", status: "Factible", optimal: false },
+          { label: "C(20, 20)", x: 20, y: 20, calc: "$Z = 40(20) + 60(20)$", z: "2,000 USD", status: "🏆 Óptimo", optimal: true },
+          { label: "D(0, 30)", x: 0, y: 30, calc: "$Z = 40(0) + 60(30)$", z: "1,800 USD", status: "Factible", optimal: false }
+        ],
+        decisionHtml: `
+          <p>De acuerdo con el teorema fundamental de la programación lineal, la solución óptima se ubica en el vértice <b>$C(20, 20)$</b>:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><b>Producción semanal de Cat6 ($x_1^*$):</b> $20\text{ cajas}$</li>
+            <li><b>Producción semanal de Cat6A ($x_2^*$):</b> $20\text{ cajas}$</li>
+            <li><b>Utilidad máxima ($Z^*$):</b> <b>2,000 USD semanales</b></li>
+          </ul>`,
+        slacksTables: [
+          {
+            subtitle: null,
+            rows: [
+              { name: "Crimpado ($s_1$)", calc: "$60 - [1(20) + 2(20)]$", val: "0 hrs", active: true, badge: "🔴 Activa", interp: "Se utiliza el <b>100 %</b> del tiempo de crimpado semanal." },
+              { name: "Certificación ($s_2$)", calc: "$80 - [2(20) + 2(20)]$", val: "0 hrs", active: true, badge: "🔴 Activa", interp: "Se consume la <b>totalidad</b> de las horas de certificación." },
+              { name: "Conectores Cat6 ($s_3$)", calc: "$30 - 20$", val: "10 cajas", active: false, badge: "🟢 No activa", interp: "Queda un <b>excedente en inventario</b> equivalente a 10 cajas sin consumir." }
+            ]
+          }
+        ],
+        interpretationHtml: `<p>La planta maximiza su rentabilidad semanal (<b>2,000 USD</b>) al equilibrar la fabricación de ambos estándares de red en 20 cajas cada uno, logrando llevar tanto el <b>área de crimpado</b> como el <b>equipo de certificación</b> al <b>100 % de su capacidad operativa</b>. Aunque el almacén cuenta con conectores suficientes para fabricar hasta 30 cajas de Cat6 (vértice $B(30, 10)$), utilizar ese excedente obligaría a reducir la producción de Cat6A (que aporta 20 USD más de ganancia por caja), disminuyendo la utilidad total a 1,800 USD.</p>`,
+        pythonCode: `import numpy as np
+import matplotlib.pyplot as plt
+
+x1 = np.linspace(0, 45, 400)
+x2_crimpado = (60 - x1) / 2
+x2_certificacion = 40 - x1
+
+plt.figure(figsize=(10, 8))
+plt.xlim(-2, 45)
+plt.ylim(-2, 45)
+plt.xlabel('$x_1$ (Cajas Cat6)', fontsize=12)
+plt.ylabel('$x_2$ (Cajas Cat6A)', fontsize=12)
+plt.title('Ejercicio 2: Patch cords de red - Método Gráfico', fontsize=14, fontweight='bold')
+
+plt.plot(x1, x2_crimpado, label=r'Crimpado: $x_1 + 2x_2 \leq 60$', color='blue', linestyle='--')
+plt.plot(x1, x2_certificacion, label=r'Certificación: $2x_1 + 2x_2 \leq 80$', color='red', linestyle='--')
+plt.axvline(30, label=r'Límite Cat6: $x_1 \leq 30$', color='green', linestyle='--')
+
+vertices = {
+    '(0,0)': (0, 0),
+    '(30,0)': (30, 0),
+    'B(30,10)': (30, 10),
+    'C(20,20) Óptimo': (20, 20),
+    'D(0,30)': (0, 30)
+}
+
+x2_factible = np.clip(np.minimum(x2_crimpado, x2_certificacion), 0, None)
+plt.fill_between(x1, 0, x2_factible, where=(x1 <= 30), color='gray', alpha=0.3, label='Región Factible')
+
+for label, (px, py) in vertices.items():
+    if 'Óptimo' in label:
+        plt.plot(px, py, 'go', markersize=10, label='Punto Óptimo (20, 20)')
+        plt.annotate(f"{label}\nZ = $2,000", (px, py), textcoords="offset points", xytext=(12,12), fontweight='bold', color='green')
+    else:
+        plt.plot(px, py, 'ko', markersize=6)
+        plt.annotate(label, (px, py), textcoords="offset points", xytext=(5,5))
+
+plt.grid(True, linestyle=':', alpha=0.5)
+plt.legend(loc='upper right')
+plt.show()`
+      },
+      {
+        id: 3,
+        shortTitle: "Cámaras IP (Sol. Múltiples)",
+        title: "Ejercicio 3: Sistemas de Cámaras IP (Caso Especial)",
+        subtitle: "Caso especial de múltiples soluciones óptimas alternativas sobre el segmento B–C.",
+        icon: "videocam",
+        tag: "Soluciones Múltiples",
+        tagType: "optimal",
+        x1Name: "Sistemas Básicos",
+        x2Name: "Sistemas Avanzados",
+        x1Unit: "sistemas",
+        x2Unit: "sistemas",
+        c1: 30,
+        c2: 60,
+        zUnit: "USD / mes",
+        optimalPoint: [10, 15],
+        optimalPointLabel: "B(10,15) y C(0,20)",
+        optimalZ: 1200,
+        activeSummary: "Jornadas (100%) + Segmento B–C",
+        xRange: [0, 22],
+        yRange: [0, 25],
+        sliderMax: [20, 25],
+        sliderStep: 1,
+        variables: [
+          "$x_1 \in \mathbb{R}^+$: Cantidad de sistemas de cámaras <b>básicos</b> a instalar al mes.",
+          "$x_2 \in \mathbb{R}^+$: Cantidad de sistemas de cámaras <b>avanzados</b> a instalar al mes."
+        ],
+        mathLatex: `$$\begin{array}{ll}
+          \textbf{Maximizar:} & Z = 30x_1 + 60x_2 \\[6pt]
+          \textbf{Sujeto a:} & 1x_1 + 2x_2 \leq 40 \quad \text{(Jornadas de Instalación)} \\[3pt]
+          & 3x_1 + 2x_2 \leq 60 \quad \text{(Rollos de Cable)} \\[3pt]
+          & x_1 \leq 16 \quad \text{(Disponibilidad de Grabadores Básicos)} \\[3pt]
+          & x_1, x_2 \geq 0 \quad \text{(Condición de no negatividad)}
+        \end{array}$$`,
+        constraints: [
+          { name: "📅 Jornadas de Instalación", expr: "$1x_1 + 2x_2 \leq 40$", limit: "40 jornadas / mes", a1: 1, a2: 2, rhs: 40, type: "<=", unit: "jornadas", color: "#2563eb" },
+          { name: "🔌 Rollos de Cable", expr: "$3x_1 + 2x_2 \leq 60$", limit: "60 rollos / mes", a1: 3, a2: 2, rhs: 60, type: "<=", unit: "rollos", color: "#dc2626" },
+          { name: "📟 Grabadores Básicos", expr: "$x_1 \leq 16$", limit: "16 grabadores / mes", a1: 1, a2: 0, rhs: 16, type: "<=", unit: "equipos", color: "#16a34a" }
+        ],
+        feasiblePolygon: [[0,0], [16,0], [16,6], [10,15], [0,20]],
+        specialSegment: [[10,15], [0,20]],
+        verticesIntro: "Evaluamos la función objetivo $Z = 30x_1 + 60x_2$ en cada uno de los vértices de la frontera factible:",
+        vertices: [
+          { label: "(0, 0)", x: 0, y: 0, calc: "$30(0) + 60(0)$", z: "0 USD", status: "Factible", optimal: false },
+          { label: "(16, 0)", x: 16, y: 0, calc: "$30(16) + 60(0)$", z: "480 USD", status: "Factible", optimal: false },
+          { label: "A(16, 6)", x: 16, y: 6, calc: "$30(16) + 60(6)$", z: "840 USD", status: "Factible", optimal: false },
+          { label: "B(10, 15)", x: 10, y: 15, calc: "$30(10) + 60(15)$", z: "1,200 USD", status: "🏆 Óptimo A", optimal: true },
+          { label: "C(0, 20)", x: 0, y: 20, calc: "$30(0) + 60(20)$", z: "1,200 USD", status: "🏆 Óptimo B", optimal: true }
+        ],
+        specialNote: "🔍 <b>Observación Crítica (Caso Especial — Múltiples Soluciones Óptimas):</b> Dos vértices diferentes ($B$ y $C$) producen exactamente el mismo beneficio máximo (<b>$Z^* = 1,200\text{ USD}$</b>). Esto ocurre porque la pendiente de la función objetivo ($-30/60 = -0.5$) coincide con la de la restricción de jornadas ($-1/2 = -0.5$). Cualquier punto sobre el segmento que une a $B(10, 15)$ y $C(0, 20)$ genera la misma utilidad máxima.",
+        decisionHtml: `
+          <p>Dado que existen infinitas combinaciones óptimas a lo largo de la restricción activa $x_1 + 2x_2 = 40$ (entre $x_1 = 0$ y $x_1 = 10$), la gerencia puede elegir entre dos planes extremos o cualquier combinación entera intermedia (como $8$ básicos y $16$ avanzados):</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><b>Opción Extrema 1 — Vértice $C(0, 20)$:</b> Instalar $0\text{ básicos}$ y $20\text{ avanzados}$ $\rightarrow$ <b>1,200 USD</b>.</li>
+            <li><b>Opción Extrema 2 — Vértice $B(10, 15)$:</b> Instalar $10\text{ básicos}$ y $15\text{ avanzados}$ $\rightarrow$ <b>1,200 USD</b>.</li>
+          </ul>`,
+        slacksTables: [
+          {
+            subtitle: "🔹 Escenario 1: Solución Extrema C(0, 20)",
+            rows: [
+              { name: "Jornadas ($s_1$)", calc: "$40 - [1(0) + 2(20)]$", val: "0 jornadas", active: true, badge: "🔴 Activa", interp: "Se consume el <b>100 %</b> de las jornadas disponibles." },
+              { name: "Rollos de Cable ($s_2$)", calc: "$60 - [3(0) + 2(20)]$", val: "20 rollos", active: false, badge: "🟢 No activa", interp: "<b>Sobran 20 rollos</b> de cable en almacén." },
+              { name: "Grabadores Básicos ($s_3$)", calc: "$16 - 0$", val: "16 equipos", active: false, badge: "🟢 No activa", interp: "<b>Sobran los 16 grabadores</b> básicos sin usar." }
+            ]
+          },
+          {
+            subtitle: "🔹 Escenario 2: Solución Extrema B(10, 15)",
+            rows: [
+              { name: "Jornadas ($s_1$)", calc: "$40 - [1(10) + 2(15)]$", val: "0 jornadas", active: true, badge: "🔴 Activa", interp: "Se consume el <b>100 %</b> de las jornadas disponibles." },
+              { name: "Rollos de Cable ($s_2$)", calc: "$60 - [3(10) + 2(15)]$", val: "0 rollos", active: true, badge: "🔴 Activa", interp: "Se agota el <b>100 %</b> de los rollos de cable." },
+              { name: "Grabadores Básicos ($s_3$)", calc: "$16 - 10$", val: "6 equipos", active: false, badge: "🟢 No activa", interp: "<b>Sobran 6 grabadores</b> básicos en inventario." }
+            ]
+          }
+        ],
+        interpretationHtml: `
+          <ul class="list-disc pl-5 space-y-1.5">
+            <li><b>Si se busca ahorrar materiales físicos:</b> Conviene elegir la <b>Opción $C(0, 20)$</b> (enfocada 100 % en sistemas avanzados), ya que mantiene la utilidad máxima dejando <b>20 rollos de cable</b> y <b>16 grabadores</b> libres para otros proyectos.</li>
+            <li><b>Si se busca diversificar el catálogo y atender ambos segmentos:</b> Conviene elegir la <b>Opción $B(10, 15)$</b>, aprovechando al máximo tanto las jornadas como el cableado sin sacrificar un solo dólar de rentabilidad.</li>
+          </ul>`,
+        pythonCode: `import numpy as np
+import matplotlib.pyplot as plt
+
+x1 = np.linspace(0, 25, 400)
+x2_jornadas = (40 - x1) / 2
+x2_cable = (60 - 3*x1) / 2
+
+plt.figure(figsize=(10, 8))
+plt.xlim(-1, 22)
+plt.ylim(-1, 25)
+plt.xlabel('$x_1$ (Sistemas Básicos)', fontsize=12)
+plt.ylabel('$x_2$ (Sistemas Avanzados)', fontsize=12)
+plt.title('Ejercicio 3: Sistemas de Cámaras IP - Caso Especial', fontsize=14, fontweight='bold')
+
+plt.plot(x1, x2_jornadas, label=r'Jornadas: $x_1 + 2x_2 \leq 40$', color='blue', linestyle='--')
+plt.plot(x1, x2_cable, label=r'Cable: $3x_1 + 2x_2 \leq 60$', color='red', linestyle='--')
+plt.axvline(16, label=r'Grabadores Básicos: $x_1 \leq 16$', color='green', linestyle='--')
+
+vertices = {
+    '(0,0)': (0, 0),
+    '(16,0)': (16, 0),
+    'A(16,6)': (16, 6),
+    'B(10,15) Óptimo A': (10, 15),
+    'C(0,20) Óptimo B': (0, 20)
+}
+
+x2_factible = np.clip(np.minimum(x2_jornadas, x2_cable), 0, None)
+plt.fill_between(x1, 0, x2_factible, where=(x1 <= 16), color='gray', alpha=0.3, label='Región Factible')
+
+# Segmento de infinitas soluciones óptimas
+x_opt = np.linspace(0, 10, 100)
+y_opt = (40 - x_opt) / 2
+plt.plot(x_opt, y_opt, color='gold', linewidth=4, label='Infinitas Soluciones Óptimas (Z = 1,200)')
+
+for label, (px, py) in vertices.items():
+    if 'Óptimo' in label:
+        plt.plot(px, py, 'go', markersize=10)
+        plt.annotate(f"{label}\nZ = $1,200", (px, py), textcoords="offset points", xytext=(12,12), fontweight='bold', color='green')
+    else:
+        plt.plot(px, py, 'ko', markersize=6)
+        plt.annotate(label, (px, py), textcoords="offset points", xytext=(5,5))
+
+plt.grid(True, linestyle=':', alpha=0.5)
+plt.legend(loc='upper right')
+plt.show()`
+      },
+      {
+        id: 4,
+        shortTitle: "Antenas Wi-Fi (Redundante)",
+        title: "Ejercicio 4: Antenas Wi-Fi (Restricción Redundante)",
+        subtitle: "Análisis de restricción comercial redundante ($x_1 \leq 40$) fuera del polígono factible.",
+        icon: "wifi_tethering",
+        tag: "Restricción Redundante",
+        tagType: "optimal",
+        x1Name: "Antenas Exteriores",
+        x2Name: "Antenas Interiores",
+        x1Unit: "antenas",
+        x2Unit: "antenas",
+        c1: 50,
+        c2: 40,
+        zUnit: "USD / sem",
+        optimalPoint: [20, 10],
+        optimalPointLabel: "B(20, 10)",
+        optimalZ: 1400,
+        activeSummary: "Ensamble y Pruebas (100%)",
+        xRange: [0, 45],
+        yRange: [0, 35],
+        sliderMax: [42, 35],
+        sliderStep: 1,
+        variables: [
+          "$x_1 \in \mathbb{R}^+$: Cantidad de antenas Wi-Fi para <b>exteriores</b> a producir por semana.",
+          "$x_2 \in \mathbb{R}^+$: Cantidad de antenas Wi-Fi para <b>interiores</b> a producir por semana."
+        ],
+        mathLatex: `$$\begin{array}{ll}
+          \textbf{Maximizar:} & Z = 50x_1 + 40x_2 \\[6pt]
+          \textbf{Sujeto a:} & 1x_1 + 1x_2 \leq 30 \quad \text{(Tiempo de Ensamble)} \\[3pt]
+          & 2x_1 + 1x_2 \leq 50 \quad \text{(Tiempo de Pruebas)} \\[3pt]
+          & x_1 \leq 40 \quad \text{(Límite de Demanda - Exteriores)} \\[3pt]
+          & x_1, x_2 \geq 0 \quad \text{(Condición de no negatividad)}
+        \end{array}$$`,
+        constraints: [
+          { name: "🔧 Tiempo de Ensamble", expr: "$1x_1 + 1x_2 \leq 30$", limit: "30 horas / semana", a1: 1, a2: 1, rhs: 30, type: "<=", unit: "hrs", color: "#2563eb" },
+          { name: "🧪 Tiempo de Pruebas", expr: "$2x_1 + 1x_2 \leq 50$", limit: "50 horas / semana", a1: 2, a2: 1, rhs: 50, type: "<=", unit: "hrs", color: "#dc2626" },
+          { name: "📊 Demanda Exteriores (Redundante)", expr: "$x_1 \leq 40$", limit: "40 antenas / semana", a1: 1, a2: 0, rhs: 40, type: "<=", unit: "antenas", color: "#16a34a" }
+        ],
+        feasiblePolygon: [[0,0], [25,0], [20,10], [0,30]],
+        verticesIntro: "Evaluamos la función objetivo de ganancias $Z = 50x_1 + 40x_2$ en cada uno de los vértices que definen el límite de la región factible:",
+        vertices: [
+          { label: "(0, 0)", x: 0, y: 0, calc: "$50(0) + 40(0)$", z: "0 USD", status: "Factible", optimal: false },
+          { label: "(25, 0)", x: 25, y: 0, calc: "$50(25) + 40(0)$", z: "1,250 USD", status: "Factible", optimal: false },
+          { label: "B(20, 10)", x: 20, y: 10, calc: "$50(20) + 40(10)$", z: "1,400 USD", status: "🏆 Óptimo", optimal: true },
+          { label: "C(0, 30)", x: 0, y: 30, calc: "$50(0) + 40(30)$", z: "1,200 USD", status: "Factible", optimal: false }
+        ],
+        specialNote: "⚠️ <b>Identificación de Restricción Redundante ($x_1 \leq 40$):</b> Incluso si se destinara toda la capacidad a fabricar únicamente antenas de exteriores ($x_2 = 0$), el tiempo de pruebas limitaría la producción a un máximo físico de <b>25 antenas semanales</b> ($2x_1 \leq 50 \implies x_1 \leq 25$). Por tanto, el límite comercial $x_1 \leq 40$ queda fuera de la región factible y no condiciona el modelo.",
+        decisionHtml: `
+          <p>De acuerdo con el teorema fundamental de la programación lineal, la solución óptima se ubica en el vértice <b>$B(20, 10)$</b>:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><b>Producción semanal de antenas exteriores ($x_1^*$):</b> $20\text{ antenas}$</li>
+            <li><b>Producción semanal de antenas interiores ($x_2^*$):</b> $10\text{ antenas}$</li>
+            <li><b>Utilidad máxima ($Z^*$):</b> <b>1,400 USD semanales</b></li>
+          </ul>`,
+        slacksTables: [
+          {
+            subtitle: null,
+            rows: [
+              { name: "Ensamble ($s_1$)", calc: "$30 - [1(20) + 1(10)]$", val: "0 hrs", active: true, badge: "🔴 Activa", interp: "Se consume la <b>totalidad</b> de las 30 horas disponibles." },
+              { name: "Pruebas ($s_2$)", calc: "$50 - [2(20) + 1(10)]$", val: "0 hrs", active: true, badge: "🔴 Activa", interp: "Se agota el <b>100 %</b> de las 50 horas de laboratorio." },
+              { name: "Demanda Exteriores ($s_3$)", calc: "$40 - 20$", val: "20 antenas", active: false, badge: "🟢 Redundante", interp: "Sobra margen de demanda por 20 unidades; la restricción no toca el polígono factible." }
+            ]
+          }
+        ],
+        interpretationHtml: `<p>La planta logra su utilidad máxima (<b>1,400 USD semanales</b>) operando las líneas de ensamble y pruebas al <b>100 % de su capacidad</b>. La restricción de demanda máxima ($x_1 \leq 40$) es completamente <b>redundante</b>: eliminarla del modelo no altera en lo absoluto la forma ni los vértices de la región factible, ya que la capacidad de laboratorio impide superar las 25 unidades semanales de exteriores.</p>`,
+        pythonCode: `import numpy as np
+import matplotlib.pyplot as plt
+
+x1 = np.linspace(0, 50, 400)
+x2_ensamble = 30 - x1
+x2_pruebas = 50 - 2*x1
+
+plt.figure(figsize=(10, 8))
+plt.xlim(-2, 45)
+plt.ylim(-2, 35)
+plt.xlabel('$x_1$ (Antenas Exteriores)', fontsize=12)
+plt.ylabel('$x_2$ (Antenas Interiores)', fontsize=12)
+plt.title('Ejercicio 4: Antenas Wi-Fi - Método Gráfico', fontsize=14, fontweight='bold')
+
+plt.plot(x1, x2_ensamble, label=r'Ensamble: $x_1 + x_2 \leq 30$', color='blue', linestyle='--')
+plt.plot(x1, x2_pruebas, label=r'Pruebas: $2x_1 + x_2 \leq 50$', color='red', linestyle='--')
+plt.axvline(40, label=r'Demanda Ext: $x_1 \leq 40$ (Redundante)', color='green', linestyle=':', linewidth=2)
+
+vertices = {
+    '(0,0)': (0, 0),
+    '(25,0)': (25, 0),
+    'B(20,10) Óptimo': (20, 10),
+    'C(0,30)': (0, 30)
+}
+
+x2_factible = np.clip(np.minimum(x2_ensamble, x2_pruebas), 0, None)
+plt.fill_between(x1, 0, x2_factible, where=(x1 <= 25), color='gray', alpha=0.3, label='Región Factible')
+
+for label, (px, py) in vertices.items():
+    if 'Óptimo' in label:
+        plt.plot(px, py, 'go', markersize=10, label='Punto Óptimo (20, 10)')
+        plt.annotate(f"{label}\nZ = $1,400", (px, py), textcoords="offset points", xytext=(12,12), fontweight='bold', color='green')
+    else:
+        plt.plot(px, py, 'ko', markersize=6)
+        plt.annotate(label, (px, py), textcoords="offset points", xytext=(5,5))
+
+plt.grid(True, linestyle=':', alpha=0.5)
+plt.legend(loc='upper right')
+plt.show()`
+      },
+      {
+        id: 5,
+        shortTitle: "Planes de Hosting (Restr. ≥)",
+        title: "Ejercicio 5: Planes de Hosting (Restricción ≥)",
+        subtitle: "Optimización de infraestructura cloud con compromiso contractual mínimo ($x_1 \geq 10$).",
+        icon: "dns",
+        tag: "Restricción ≥ (Excedente)",
+        tagType: "optimal",
+        x1Name: "Planes Básicos",
+        x2Name: "Planes Pro",
+        x1Unit: "cuentas",
+        x2Unit: "cuentas",
+        c1: 30,
+        c2: 50,
+        zUnit: "USD / mes",
+        optimalPoint: [20, 20],
+        optimalPointLabel: "C(20, 20)",
+        optimalZ: 1600,
+        activeSummary: "CPU y Almacenamiento (100%)",
+        xRange: [0, 45],
+        yRange: [0, 35],
+        sliderMax: [45, 35],
+        sliderStep: 1,
+        variables: [
+          "$x_1 \in \mathbb{R}^+$: Cantidad de planes de hosting <b>Básicos</b> a vender por mes.",
+          "$x_2 \in \mathbb{R}^+$: Cantidad de planes de hosting <b>Pro</b> a vender por mes."
+        ],
+        mathLatex: `$$\begin{array}{ll}
+          \textbf{Maximizar:} & Z = 30x_1 + 50x_2 \\[6pt]
+          \textbf{Sujeto a:} & 1x_1 + 1x_2 \leq 40 \quad \text{(Núcleos de CPU)} \\[3pt]
+          & 1x_1 + 2x_2 \leq 60 \quad \text{(Unidades de Almacenamiento)} \\[3pt]
+          & x_1 \geq 10 \quad \text{(Contrato Mínimo de Universidad)} \\[3pt]
+          & x_1, x_2 \geq 0 \quad \text{(Condición de no negatividad)}
+        \end{array}$$`,
+        constraints: [
+          { name: "⚡ Núcleos de CPU", expr: "$1x_1 + 1x_2 \leq 40$", limit: "40 núcleos disponibles", a1: 1, a2: 1, rhs: 40, type: "<=", unit: "núcleos", color: "#2563eb" },
+          { name: "💾 Almacenamiento", expr: "$1x_1 + 2x_2 \leq 60$", limit: "60 unidades (6,000 GB)", a1: 1, a2: 2, rhs: 60, type: "<=", unit: "unidades", color: "#dc2626" },
+          { name: "🎓 Contrato Universidad", expr: "$x_1 \geq 10$", limit: "Atender ≥ 10 planes Básicos", a1: 1, a2: 0, rhs: 10, type: ">=", unit: "cuentas", color: "#16a34a" }
+        ],
+        feasiblePolygon: [[10,0], [40,0], [20,20], [10,25]],
+        verticesIntro: "Evaluamos la función objetivo de ganancias $Z = 30x_1 + 50x_2$ en cada punto frontera de la región factible (considerando que el área válida inicia a la derecha de $x_1 \geq 10$):",
+        vertices: [
+          { label: "A(10, 0)", x: 10, y: 0, calc: "$30(10) + 50(0)$", z: "300 USD", status: "Factible (Mínimo)", optimal: false },
+          { label: "B(40, 0)", x: 40, y: 0, calc: "$30(40) + 50(0)$", z: "1,200 USD", status: "Factible", optimal: false },
+          { label: "C(20, 20)", x: 20, y: 20, calc: "$30(20) + 50(20)$", z: "1,600 USD", status: "🏆 Óptimo", optimal: true },
+          { label: "D(10, 25)", x: 10, y: 25, calc: "$30(10) + 50(25)$", z: "1,550 USD", status: "Factible", optimal: false }
+        ],
+        decisionHtml: `
+          <p>De acuerdo con el teorema fundamental de la programación lineal, la solución óptima se ubica en el vértice <b>$C(20, 20)$</b>:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><b>Ventas mensuales de Plan Básico ($x_1^*$):</b> $20\text{ cuentas}$</li>
+            <li><b>Ventas mensuales de Plan Pro ($x_2^*$):</b> $20\text{ cuentas}$</li>
+            <li><b>Utilidad máxima ($Z^*$):</b> <b>1,600 USD mensuales</b></li>
+          </ul>`,
+        slacksTables: [
+          {
+            subtitle: null,
+            rows: [
+              { name: "Núcleos de CPU ($s_1$)", calc: "$40 - [1(20) + 1(20)]$", val: "0 núcleos", active: true, badge: "🔴 Activa", interp: "Se consumen en su totalidad los 40 núcleos de la infraestructura física." },
+              { name: "Almacenamiento ($s_2$)", calc: "$60 - [1(20) + 2(20)]$", val: "0 unidades", active: true, badge: "🔴 Activa", interp: "Se agota el <b>100 %</b> de la capacidad instalada (60 unidades = 6,000 GB)." },
+              { name: "Contrato Universidad ($e_3$)", calc: "$20 - 10$", val: "10 cuentas", active: false, badge: "🟢 Inactiva (Excedente)", interp: "Se supera el compromiso mínimo por <b>10 clientes adicionales</b>." }
+            ]
+          }
+        ],
+        interpretationHtml: `<p>La empresa maximiza su beneficio en el punto exacto donde se agotan los recursos físicos del servidor (<b>CPU</b> y <b>almacenamiento</b>). Aunque existe una obligación contractual de vender un piso mínimo de 10 planes Básicos (que dejan menor margen unitario que el plan Pro), el equilibrio técnico del hardware empuja el óptimo hacia <b>20 planes Básicos</b>, superando holgadamente el requisito universitario y garantizando el aprovechamiento total de los equipos.</p>`,
+        pythonCode: `import numpy as np
+import matplotlib.pyplot as plt
+
+x1 = np.linspace(0, 50, 400)
+x2_cpu = 40 - x1
+x2_almacenamiento = (60 - x1) / 2
+
+plt.figure(figsize=(10, 8))
+plt.xlim(-2, 45)
+plt.ylim(-2, 35)
+plt.xlabel('$x_1$ (Planes Básicos)', fontsize=12)
+plt.ylabel('$x_2$ (Planes Pro)', fontsize=12)
+plt.title('Ejercicio 5: Planes de Hosting - Método Gráfico', fontsize=14, fontweight='bold')
+
+plt.plot(x1, x2_cpu, label=r'Núcleos de CPU: $x_1 + x_2 \leq 40$', color='blue', linestyle='--')
+plt.plot(x1, x2_almacenamiento, label=r'Almacenamiento: $x_1 + 2x_2 \leq 60$', color='red', linestyle='--')
+plt.axvline(10, label=r'Contrato Mínimo: $x_1 \geq 10$', color='green', linestyle='-', linewidth=2)
+
+vertices = {
+    'A(10,0)': (10, 0),
+    'B(40,0)': (40, 0),
+    'C(20,20) Óptimo': (20, 20),
+    'D(10,25)': (10, 25)
+}
+
+x2_factible = np.clip(np.minimum(x2_cpu, x2_almacenamiento), 0, None)
+plt.fill_between(x1, 0, x2_factible, where=(x1 >= 10) & (x1 <= 40), color='gray', alpha=0.3, label='Región Factible')
+
+for label, (px, py) in vertices.items():
+    if 'Óptimo' in label:
+        plt.plot(px, py, 'go', markersize=10, label='Punto Óptimo (20, 20)')
+        plt.annotate(f"{label}\nZ = $1,600", (px, py), textcoords="offset points", xytext=(12,12), fontweight='bold', color='green')
+    else:
+        plt.plot(px, py, 'ko', markersize=6)
+        plt.annotate(label, (px, py), textcoords="offset points", xytext=(5,5))
+
+plt.grid(True, linestyle=':', alpha=0.5)
+plt.legend(loc='upper right')
+plt.show()`
+      },
+      {
+        id: 6,
+        shortTitle: "Producción de Antenas",
+        title: "Ejercicio 6: Producción de Antenas",
+        subtitle: "Mezcla óptima de antenas sectoriales y parabólicas bajo restricciones de planta y demanda.",
+        icon: "settings_input_antenna",
+        tag: "Solución Única",
+        tagType: "optimal",
+        x1Name: "Antenas Sectoriales",
+        x2Name: "Antenas Parabólicas",
+        x1Unit: "antenas",
+        x2Unit: "antenas",
+        c1: 50,
+        c2: 80,
+        zUnit: "USD / sem",
+        optimalPoint: [30, 20],
+        optimalPointLabel: "C(30, 20)",
+        optimalZ: 3100,
+        activeSummary: "Maquinado y Ensamble (100%)",
+        xRange: [0, 75],
+        yRange: [0, 45],
+        sliderMax: [70, 40],
+        sliderStep: 1,
+        variables: [
+          "$x_1 \in \mathbb{R}^+$: Cantidad de <b>antenas sectoriales</b> a fabricar por semana.",
+          "$x_2 \in \mathbb{R}^+$: Cantidad de <b>antenas parabólicas</b> a fabricar por semana."
+        ],
+        mathLatex: `$$\begin{array}{ll}
+          \textbf{Maximizar:} & Z = 50x_1 + 80x_2 \\[6pt]
+          \textbf{Sujeto a:} & 4x_1 + 6x_2 \leq 240 \quad \text{(Horas de Maquinado)} \\[3pt]
+          & 2x_1 + 4x_2 \leq 140 \quad \text{(Horas de Ensamble)} \\[3pt]
+          & x_2 \leq 30 \quad \text{(Demanda Máxima de Parabólicas)} \\[3pt]
+          & x_1, x_2 \geq 0 \quad \text{(Condición de no negatividad)}
+        \end{array}$$`,
+        constraints: [
+          { name: "⚙️ Horas de Maquinado", expr: "$4x_1 + 6x_2 \leq 240$", limit: "240 horas / semana", a1: 4, a2: 6, rhs: 240, type: "<=", unit: "hrs", color: "#2563eb" },
+          { name: "🔧 Horas de Ensamble", expr: "$2x_1 + 4x_2 \leq 140$", limit: "140 horas / semana", a1: 2, a2: 4, rhs: 140, type: "<=", unit: "hrs", color: "#dc2626" },
+          { name: "📡 Demanda Parabólicas", expr: "$x_2 \leq 30$", limit: "30 unidades / semana", a1: 0, a2: 1, rhs: 30, type: "<=", unit: "antenas", color: "#16a34a" }
+        ],
+        feasiblePolygon: [[0,0], [60,0], [30,20], [10,30], [0,30]],
+        verticesIntro: "Evaluamos la función objetivo de ingresos $Z = 50x_1 + 80x_2$ en cada uno de los vértices frontera del polígono factible:",
+        vertices: [
+          { label: "(0, 0)", x: 0, y: 0, calc: "$50(0) + 80(0)$", z: "0 USD", status: "Factible", optimal: false },
+          { label: "(60, 0)", x: 60, y: 0, calc: "$50(60) + 80(0)$", z: "3,000 USD", status: "Factible", optimal: false },
+          { label: "C(30, 20)", x: 30, y: 20, calc: "$50(30) + 80(20)$", z: "3,100 USD", status: "🏆 Óptimo", optimal: true },
+          { label: "D(10, 30)", x: 10, y: 30, calc: "$50(10) + 80(30)$", z: "2,900 USD", status: "Factible", optimal: false },
+          { label: "(0, 30)", x: 0, y: 30, calc: "$50(0) + 80(30)$", z: "2,400 USD", status: "Factible", optimal: false }
+        ],
+        decisionHtml: `
+          <p>De acuerdo con el teorema fundamental de la programación lineal, la empresa debe programar la manufactura semanal en el vértice <b>$C(30, 20)$</b>:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><b>Antenas sectoriales ($x_1^*$):</b> $30\text{ unidades}$</li>
+            <li><b>Antenas parabólicas ($x_2^*$):</b> $20\text{ unidades}$</li>
+            <li><b>Ganancia total máxima ($Z^*$):</b> <b>3,100 USD por semana</b></li>
+          </ul>`,
+        slacksTables: [
+          {
+            subtitle: null,
+            rows: [
+              { name: "Maquinado ($s_1$)", calc: "$240 - [4(30) + 6(20)]$", val: "0 horas", active: true, badge: "🔴 Activa", interp: "Se consumen en su totalidad las 240 horas de maquinado de la planta." },
+              { name: "Ensamble ($s_2$)", calc: "$140 - [2(30) + 4(20)]$", val: "0 horas", active: true, badge: "🔴 Activa", interp: "Se agotan las 140 horas disponibles para ensamble semanal." },
+              { name: "Demanda Parabólicas ($s_3$)", calc: "$30 - 20$", val: "10 antenas", active: false, badge: "🟢 No activa", interp: "Hay una holgura de 10 unidades en el mercado de antenas parabólicas." }
+            ]
+          }
+        ],
+        interpretationHtml: `<p>La planificación de la planta alcanza su punto óptimo en el equilibrio técnico donde el <b>maquinado</b> y el <b>ensamble</b> operan al <b>100 % de su capacidad</b> (holgura cero). Aunque la demanda comercial permitiría vender hasta 10 antenas parabólicas adicionales ($x_2 \leq 30$), producirlas obligaría a sacrificar antenas sectoriales, desplazando la producción hacia el vértice $D(10, 30)$ y reduciendo el ingreso neto a 2,900 USD.</p>`,
+        pythonCode: `import numpy as np
+import matplotlib.pyplot as plt
+
+x1 = np.linspace(0, 80, 400)
+x2_maquinado = (240 - 4*x1) / 6
+x2_ensamble = (140 - 2*x1) / 4
+
+plt.figure(figsize=(10, 8))
+plt.xlim(-2, 75)
+plt.ylim(-2, 45)
+plt.xlabel('$x_1$ (Antenas Sectoriales)', fontsize=12)
+plt.ylabel('$x_2$ (Antenas Parabólicas)', fontsize=12)
+plt.title('Ejercicio 6: Producción de Antenas - Método Gráfico', fontsize=14, fontweight='bold')
+
+plt.plot(x1, x2_maquinado, label=r'Maquinado: $4x_1 + 6x_2 \leq 240$', color='blue', linestyle='--')
+plt.plot(x1, x2_ensamble, label=r'Ensamble: $2x_1 + 4x_2 \leq 140$', color='red', linestyle='--')
+plt.axhline(30, label=r'Demanda: $x_2 \leq 30$', color='green', linestyle=':')
+
+vertices = {
+    '(0,0)': (0, 0),
+    '(60,0)': (60, 0),
+    'C(30,20) Óptimo': (30, 20),
+    'D(10,30)': (10, 30),
+    '(0,30)': (0, 30)
+}
+
+x2_factible = np.clip(np.minimum(np.minimum(x2_maquinado, x2_ensamble), 30), 0, None)
+plt.fill_between(x1, 0, x2_factible, where=(x1 <= 60), color='gray', alpha=0.3, label='Región Factible')
+
+for label, (px, py) in vertices.items():
+    if 'Óptimo' in label:
+        plt.plot(px, py, 'go', markersize=10, label='Punto Óptimo (30, 20)')
+        plt.annotate(f"{label}\nZ = $3,100", (px, py), textcoords="offset points", xytext=(12,12), fontweight='bold', color='green')
+    else:
+        plt.plot(px, py, 'ko', markersize=6)
+        plt.annotate(label, (px, py), textcoords="offset points", xytext=(5,5))
+
+plt.grid(True, linestyle=':', alpha=0.5)
+plt.legend(loc='upper right')
+plt.show()`
+      },
+      {
+        id: 7,
+        shortTitle: "Proveedor de Internet (ISP)",
+        title: "Ejercicio 7: Planes de un Proveedor de Internet",
+        subtitle: "Asignación de ancho de banda y soporte técnico con cuota mínima empresarial ($x_2 \geq 10$).",
+        icon: "router",
+        tag: "Restricción ≥ (Excedente)",
+        tagType: "optimal",
+        x1Name: "Clientes Hogar",
+        x2Name: "Clientes Empresa",
+        x1Unit: "cuentas",
+        x2Unit: "cuentas",
+        c1: 25,
+        c2: 90,
+        zUnit: "USD / mes",
+        optimalPoint: [50, 20],
+        optimalPointLabel: "C(50, 20)",
+        optimalZ: 3050,
+        activeSummary: "Ancho de Banda y Soporte (100%)",
+        xRange: [0, 110],
+        yRange: [0, 45],
+        sliderMax: [100, 40],
+        sliderStep: 1,
+        variables: [
+          "$x_1 \in \mathbb{R}^+$: Cantidad de clientes del plan <b>Hogar</b> a aceptar por mes.",
+          "$x_2 \in \mathbb{R}^+$: Cantidad de clientes del plan <b>Empresa</b> a aceptar por mes."
+        ],
+        mathLatex: `$$\begin{array}{ll}
+          \textbf{Maximizar:} & Z = 25x_1 + 90x_2 \\[6pt]
+          \textbf{Sujeto a:} & 20x_1 + 50x_2 \leq 2,000 \quad \text{(Ancho de Banda en Mbps)} \\[3pt]
+          & x_1 + 4x_2 \leq 130 \quad \text{(Horas de Soporte Técnico)} \\[3pt]
+          & x_2 \geq 10 \quad \text{(Contratos Mínimos Comprometidos)} \\[3pt]
+          & x_1, x_2 \geq 0 \quad \text{(Condición de no negatividad)}
+        \end{array}$$`,
+        constraints: [
+          { name: "⚡ Ancho de Banda", expr: "$20x_1 + 50x_2 \leq 2,000$", limit: "2,000 Mbps disponibles", a1: 20, a2: 50, rhs: 2000, type: "<=", unit: "Mbps", color: "#2563eb" },
+          { name: "🛠️ Soporte Técnico", expr: "$x_1 + 4x_2 \leq 130$", limit: "130 horas / mes", a1: 1, a2: 4, rhs: 130, type: "<=", unit: "hrs", color: "#dc2626" },
+          { name: "📈 Contratos Mínimos", expr: "$x_2 \geq 10$", limit: "Atender ≥ 10 planes Empresa", a1: 0, a2: 1, rhs: 10, type: ">=", unit: "clientes", color: "#16a34a" }
+        ],
+        feasiblePolygon: [[0,10], [75,10], [50,20], [0,32.5]],
+        verticesIntro: "Dado que la restricción $x_2 \geq 10$ establece un límite inferior horizontal, el origen $(0, 0)$ queda fuera de la región de factibilidad. Evaluamos $Z = 25x_1 + 90x_2$ en los vértices del polígono factible:",
+        vertices: [
+          { label: "(0, 10)", x: 0, y: 10, calc: "$Z = 25(0) + 90(10)$", z: "900 USD", status: "Factible", optimal: false },
+          { label: "(75, 10)", x: 75, y: 10, calc: "$Z = 25(75) + 90(10)$", z: "2,775 USD", status: "Factible", optimal: false },
+          { label: "C(50, 20)", x: 50, y: 20, calc: "$Z = 25(50) + 90(20)$", z: "3,050 USD", status: "🏆 Óptimo", optimal: true },
+          { label: "(0, 32.5)", x: 0, y: 32.5, calc: "$Z = 25(0) + 90(32.5)$", z: "2,925 USD", status: "Factible", optimal: false }
+        ],
+        decisionHtml: `
+          <p>De acuerdo con el teorema fundamental de la programación lineal, la solución óptima se ubica en el vértice <b>$C(50, 20)$</b>:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><b>Clientes mensuales de Plan Hogar ($x_1^*$):</b> $50\text{ cuentas}$</li>
+            <li><b>Clientes mensuales de Plan Empresa ($x_2^*$):</b> $20\text{ cuentas}$</li>
+            <li><b>Ingreso mensual máximo ($Z^*$):</b> <b>3,050 USD mensuales</b></li>
+          </ul>`,
+        slacksTables: [
+          {
+            subtitle: null,
+            rows: [
+              { name: "Ancho de Banda ($s_1$)", calc: "$2,000 - [20(50) + 50(20)]$", val: "0 Mbps", active: true, badge: "🔴 Activa", interp: "Se consume el <b>100 %</b> del canal total disponible (2,000 Mbps)." },
+              { name: "Soporte Técnico ($s_2$)", calc: "$130 - [1(50) + 4(20)]$", val: "0 hrs", active: true, badge: "🔴 Activa", interp: "Se agota la totalidad de las 130 horas mensuales de soporte." },
+              { name: "Contrato Empresa ($e_3$)", calc: "$20 - 10$", val: "10 clientes", active: false, badge: "🟢 Inactiva (Excedente)", interp: "Se supera la meta mínima comercial por un <b>excedente de 10 clientes</b>." }
+            ]
+          }
+        ],
+        interpretationHtml: `<p>La operación alcanza su máximo ingreso mensual (<b>3,050 USD</b>) cuando los dos recursos críticos del sistema de telecomunicaciones (<b>Ancho de Banda</b> y <b>Soporte Técnico</b>) operan al <b>100 % de su capacidad instalada</b>. Aunque la gerencia fijó un piso contractual de atender al menos 10 clientes corporativos, la alta rentabilidad unitaria del plan Empresa (90 USD frente a 25 USD del plan Hogar) impulsa el óptimo hacia <b>20 cuentas corporativas</b>, dejando un margen de seguridad de 10 contratos por encima de la cuota mínima.</p>`,
+        pythonCode: `import numpy as np
+import matplotlib.pyplot as plt
+
+x1 = np.linspace(0, 110, 500)
+x2_ancho_banda = (2000 - 20*x1) / 50
+x2_soporte = (130 - x1) / 4
+
+plt.figure(figsize=(10, 8))
+plt.xlim(-5, 110)
+plt.ylim(-2, 45)
+plt.xlabel('$x_1$ (Clientes Hogar)', fontsize=12)
+plt.ylabel('$x_2$ (Clientes Empresa)', fontsize=12)
+plt.title('Ejercicio 7: Planes de un Proveedor de Internet - Método Gráfico', fontsize=14, fontweight='bold')
+
+plt.plot(x1, x2_ancho_banda, label=r'Ancho de Banda: $20x_1 + 50x_2 \leq 2,000$', color='blue', linestyle='--')
+plt.plot(x1, x2_soporte, label=r'Soporte: $x_1 + 4x_2 \leq 130$', color='red', linestyle='--')
+plt.axhline(10, label=r'Contratos Mínimos: $x_2 \geq 10$', color='green', linestyle='-', linewidth=2)
+
+vertices = {
+    '(0,10)': (0, 10),
+    '(75,10)': (75, 10),
+    'C(50,20) Óptimo': (50, 20),
+    '(0,32.5)': (0, 32.5)
+}
+
+x2_lim_superior = np.minimum(x2_ancho_banda, x2_soporte)
+plt.fill_between(x1, 10, x2_lim_superior, where=(x2_lim_superior >= 10) & (x1 <= 75), color='gray', alpha=0.3, label='Región Factible')
+
+for label, (px, py) in vertices.items():
+    if 'Óptimo' in label:
+        plt.plot(px, py, 'go', markersize=10, label='Punto Óptimo (50, 20)')
+        plt.annotate(f"{label}\nZ = $3,050", (px, py), textcoords="offset points", xytext=(12,12), fontweight='bold', color='green')
+    else:
+        plt.plot(px, py, 'ko', markersize=6)
+        plt.annotate(label, (px, py), textcoords="offset points", xytext=(5,5))
+
+plt.grid(True, linestyle=':', alpha=0.5)
+plt.legend(loc='upper right')
+plt.show()`
+      }
+    ];
+
+    // =========================================================================
+    // STATE & INITIALIZATION
+    // =========================================================================
+    let currentExerciseIndex = 0;
+    let simX1 = 15;
+    let simX2 = 10;
+
+    function renderMath(el = document.body) {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(el, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    function initApp() {
+      buildSidebar();
+      buildOverviewTable();
+      selectExercise(0);
+
+      // Theme toggle
+      const themeBtn = document.getElementById("theme-toggle");
+      themeBtn.addEventListener("click", () => {
+        const html = document.documentElement;
+        const isDark = html.getAttribute("data-theme") === "dark";
+        html.setAttribute("data-theme", isDark ? "light" : "dark");
+        document.getElementById("theme-icon").textContent = isDark ? "dark_mode" : "light_mode";
+        updatePlotWithSim();
+      });
+
+      // Mobile drawer
+      document.getElementById("mobile-menu-btn").addEventListener("click", () => {
+        const drawer = document.getElementById("nav-drawer");
+        const isOpen = !drawer.classList.contains("-translate-x-full");
+        toggleDrawer(!isOpen);
+      });
+
+      // Ensure KaTeX renders once deferred script finishes
+      window.addEventListener("load", () => renderMath());
+    }
+
+    function toggleDrawer(open) {
+      const drawer = document.getElementById("nav-drawer");
+      const backdrop = document.getElementById("drawer-backdrop");
+      if (open) {
+        drawer.classList.remove("-translate-x-full");
+        backdrop.classList.remove("hidden");
+      } else {
+        drawer.classList.add("-translate-x-full");
+        backdrop.classList.add("hidden");
+      }
+    }
+
+    function buildSidebar() {
+      const list = document.getElementById("exercise-nav-list");
+      list.innerHTML = EXERCISES.map((ex, idx) => `
+        <div id="nav-ex-${idx}" class="nav-pill" onclick="selectExercise(${idx}); toggleDrawer(false);">
+          <span class="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center shrink-0" style="background-color: var(--md-surface-container-high);">${ex.id}</span>
+          <span class="truncate">${ex.shortTitle}</span>
+        </div>
+      `).join("");
+    }
+
+    function buildOverviewTable() {
+      const tbody = document.getElementById("overview-table-body");
+      tbody.innerHTML = EXERCISES.map((ex, idx) => `
+        <tr class="cursor-pointer" onclick="selectExercise(${idx})">
+          <td class="font-bold">${ex.id}</td>
+          <td class="font-semibold">${ex.shortTitle}</td>
+          <td>$\text{Max } Z = ${ex.c1}x_1 + ${ex.c2}x_2$</td>
+          <td class="font-mono-code font-bold">${ex.optimalPointLabel}</td>
+          <td class="font-bold" style="color: var(--md-secondary);">$${ex.optimalZ.toLocaleString()} USD</td>
+          <td><span class="md-chip chip-optimal">${ex.tag}</span></td>
+          <td>
+            <button class="px-3 py-1 rounded-full text-xs font-bold" style="background-color: var(--md-primary-container); color: var(--md-on-primary-container);">
+              Explorar →
+            </button>
+          </td>
+        </tr>
+      `).join("");
+      renderMath(tbody);
+    }
+
+    function selectView(viewName) {
+      document.getElementById("view-overview").classList.toggle("hidden", viewName !== "overview");
+      document.getElementById("view-exercise").classList.toggle("hidden", viewName !== "exercise");
+
+      document.getElementById("nav-overview").classList.toggle("active", viewName === "overview");
+      EXERCISES.forEach((_, idx) => {
+        const el = document.getElementById(`nav-ex-${idx}`);
+        if (el) el.classList.toggle("active", viewName === "exercise" && idx === currentExerciseIndex);
+      });
+
+      if (viewName === "overview") {
+        renderMath(document.getElementById("view-overview"));
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function selectExercise(idx) {
+      currentExerciseIndex = idx;
+      const ex = EXERCISES[idx];
+
+      selectView("exercise");
+
+      // Header & KPIs
+      document.getElementById("ex-badge").textContent = `EJERCICIO ${ex.id} DE 7`;
+      document.getElementById("ex-tag").textContent = ex.tag;
+      document.getElementById("ex-title").textContent = ex.title;
+      document.getElementById("ex-subtitle").textContent = ex.subtitle;
+
+      document.getElementById("kpi-point").textContent = ex.optimalPointLabel;
+      document.getElementById("kpi-z").textContent = `$${ex.optimalZ.toLocaleString()} ${ex.zUnit}`;
+      document.getElementById("kpi-active").textContent = ex.activeSummary;
+
+      document.getElementById("btn-prev-ex").disabled = idx === 0;
+      document.getElementById("btn-next-ex").disabled = idx === EXERCISES.length - 1;
+
+      // Sliders initialization
+      simX1 = ex.optimalPoint[0];
+      simX2 = ex.optimalPoint[1];
+
+      const s1 = document.getElementById("sim-x1-slider");
+      const s2 = document.getElementById("sim-x2-slider");
+      s1.max = ex.sliderMax[0];
+      s1.step = ex.sliderStep;
+      s1.value = simX1;
+
+      s2.max = ex.sliderMax[1];
+      s2.step = ex.sliderStep;
+      s2.value = simX2;
+
+      document.getElementById("sim-x1-label").innerHTML = `$x_1$ (${ex.x1Name}):`;
+      document.getElementById("sim-x2-label").innerHTML = `$x_2$ (${ex.x2Name}):`;
+
+      // Tab 1: Model
+      document.getElementById("model-vars-list").innerHTML = ex.variables.map(v => `<li class="flex items-start gap-2"><span style="color:var(--md-primary);">•</span><span>${v}</span></li>`).join("");
+      document.getElementById("model-math-block").innerHTML = ex.mathLatex;
+      document.getElementById("model-constraints-table").innerHTML = ex.constraints.map(c => `
+        <tr>
+          <td class="font-semibold">${c.name}</td>
+          <td>${c.expr}</td>
+          <td>${c.limit}</td>
+        </tr>
+      `).join("") + `
+        <tr>
+          <td class="font-semibold">📐 No Negatividad</td>
+          <td>$x_1, x_2 \geq 0$</td>
+          <td>Valores no negativos</td>
+        </tr>`;
+
+      // Tab 2: Vertices
+      document.getElementById("vertices-intro").innerHTML = ex.verticesIntro;
+      document.getElementById("vertices-table-body").innerHTML = ex.vertices.map(v => `
+        <tr class="${v.optimal ? 'row-optimal' : ''}">
+          <td class="font-mono-code font-bold">${v.label}</td>
+          <td>${v.calc}</td>
+          <td class="font-bold">${v.z}</td>
+          <td><span class="md-chip ${v.optimal ? 'chip-optimal' : 'chip-inactive'}">${v.status}</span></td>
+        </tr>
+      `).join("");
+
+      const noteBox = document.getElementById("vertices-special-note");
+      if (ex.specialNote) {
+        noteBox.innerHTML = ex.specialNote;
+        noteBox.classList.remove("hidden");
+      } else {
+        noteBox.classList.add("hidden");
+      }
+
+      // Tab 3: Analysis
+      document.getElementById("analysis-decision").innerHTML = ex.decisionHtml;
+      document.getElementById("analysis-slacks-container").innerHTML = ex.slacksTables.map(st => `
+        <div>
+          ${st.subtitle ? `<p class="text-xs font-bold mb-2" style="color: var(--md-primary);">${st.subtitle}</p>` : ''}
+          <div class="overflow-x-auto rounded-xl border" style="border-color: var(--md-outline-variant);">
+            <table class="md-table">
+              <thead>
+                <tr>
+                  <th>Recurso / Restricción</th>
+                  <th>Cálculo de Margen</th>
+                  <th>Valor</th>
+                  <th>Estado</th>
+                  <th>Interpretación Operativa</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${st.rows.map(r => `
+                  <tr>
+                    <td class="font-semibold">${r.name}</td>
+                    <td>${r.calc}</td>
+                    <td class="font-mono-code font-bold">${r.val}</td>
+                    <td><span class="md-chip ${r.active ? 'chip-active' : 'chip-inactive'}">${r.badge}</span></td>
+                    <td class="text-xs sm:text-sm">${r.interp}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `).join("");
+      document.getElementById("analysis-interpretation").innerHTML = ex.interpretationHtml;
+
+      // Tab 4: Python Code
+      const codeEl = document.getElementById("python-code-block");
+      codeEl.textContent = ex.pythonCode;
+      delete codeEl.dataset.highlighted;
+      if (typeof hljs !== "undefined") hljs.highlightElement(codeEl);
+
+      // Update Simulator & Plot
+      onSliderChange();
+      renderMath(document.getElementById("view-exercise"));
+    }
+
+    function navigateExercise(delta) {
+      const next = currentExerciseIndex + delta;
+      if (next >= 0 && next < EXERCISES.length) {
+        selectExercise(next);
+      }
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll(".md-tab").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.tab === tabName);
+      });
+      document.querySelectorAll(".tab-panel").forEach(panel => {
+        panel.classList.toggle("hidden", panel.id !== `tab-${tabName}`);
+      });
+      renderMath(document.getElementById(`tab-${tabName}`));
+    }
+
+    // =========================================================================
+    // LIVE SIMULATOR & INTERACTIVE PLOTLY CHART
+    // =========================================================================
+    function snapToOptimal() {
+      const ex = EXERCISES[currentExerciseIndex];
+      document.getElementById("sim-x1-slider").value = ex.optimalPoint[0];
+      document.getElementById("sim-x2-slider").value = ex.optimalPoint[1];
+      onSliderChange();
+      showToast(`Punto ajustado al óptimo ${ex.optimalPointLabel}`);
+    }
+
+    function onSliderChange() {
+      const ex = EXERCISES[currentExerciseIndex];
+      simX1 = parseFloat(document.getElementById("sim-x1-slider").value);
+      simX2 = parseFloat(document.getElementById("sim-x2-slider").value);
+
+      document.getElementById("sim-x1-val").textContent = `${simX1} ${ex.x1Unit}`;
+      document.getElementById("sim-x2-val").textContent = `${simX2} ${ex.x2Unit}`;
+
+      const zVal = ex.c1 * simX1 + ex.c2 * simX2;
+      document.getElementById("sim-z-result").textContent = `$${zVal.toLocaleString()} USD`;
+      document.getElementById("sim-formula-eval").textContent = `Z = ${ex.c1}(${simX1}) + ${ex.c2}(${simX2})`;
+
+      // Check feasibility across all constraints
+      let isFeasible = simX1 >= 0 && simX2 >= 0;
+      const barsHtml = ex.constraints.map(c => {
+        const used = c.a1 * simX1 + c.a2 * simX2;
+        const ok = c.type === "<=" ? used <= c.rhs + 1e-6 : used >= c.rhs - 1e-6;
+        if (!ok) isFeasible = false;
+
+        const pct = Math.min(100, Math.max(0, (used / c.rhs) * 100));
+        const barColor = !ok ? "#dc2626" : (Math.abs(used - c.rhs) < 1e-6 ? "#d97706" : "#16a34a");
+        const statusText = !ok
+          ? (c.type === "<=" ? `Excede por ${(used - c.rhs).toFixed(1)} ${c.unit}` : `Faltan ${(c.rhs - used).toFixed(1)} ${c.unit}`)
+          : (c.type === "<=" ? `Holgura: ${(c.rhs - used).toFixed(1)} ${c.unit}` : `Excedente: +${(used - c.rhs).toFixed(1)} ${c.unit}`);
+
+        return `
+          <div class="p-2.5 rounded-xl border" style="background-color: var(--md-surface-container); border-color: var(--md-outline-variant);">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-semibold">${c.name}</span>
+              <span class="font-mono-code font-bold" style="color: ${barColor};">${used} ${c.type === "<=" ? "≤" : "≥"} ${c.rhs} ${c.unit}</span>
+            </div>
+            <div class="w-full h-2 rounded-full overflow-hidden" style="background-color: var(--md-surface-container-high);">
+              <div class="h-full rounded-full transition-all duration-150" style="width: ${pct}%; background-color: ${barColor};"></div>
+            </div>
+            <p class="text-[11px] mt-1 font-medium" style="color: ${barColor};">${statusText}</p>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("sim-constraints-bars").innerHTML = barsHtml;
+
+      const statusBox = document.getElementById("sim-status-box");
+      const badge = document.getElementById("sim-feasibility-badge");
+      const isOptimal = isFeasible && Math.abs(zVal - ex.optimalZ) < 1e-6;
+
+      if (!isFeasible) {
+        statusBox.style.backgroundColor = "var(--md-danger-bg)";
+        statusBox.style.color = "var(--md-danger-text)";
+        statusBox.style.borderColor = "var(--md-danger-text)";
+        badge.textContent = "❌ FUERA DE REGIÓN FACTIBLE";
+      } else if (isOptimal) {
+        statusBox.style.backgroundColor = "var(--md-tertiary-container)";
+        statusBox.style.color = "var(--md-on-tertiary-container)";
+        statusBox.style.borderColor = "var(--md-tertiary)";
+        badge.textContent = "🏆 SOLUCIÓN ÓPTIMA ALCANZADA";
+      } else {
+        statusBox.style.backgroundColor = "var(--md-success-bg)";
+        statusBox.style.color = "var(--md-success-text)";
+        statusBox.style.borderColor = "var(--md-success-text)";
+        badge.textContent = "✅ PUNTO FACTIBLE VÁLIDO";
+      }
+
+      updatePlotWithSim();
+    }
+
+    function updatePlotWithSim() {
+      const ex = EXERCISES[currentExerciseIndex];
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+
+      const bgPaper = isDark ? "#111827" : "#ffffff";
+      const bgPlot = isDark ? "#0f172a" : "#f8fafc";
+      const gridColor = isDark ? "#1e293b" : "#e2e8f0";
+      const textColor = isDark ? "#f1f5f9" : "#0f172a";
+
+      const traces = [];
+
+      // 1. Feasible Polygon Shading
+      const polyX = [...ex.feasiblePolygon.map(p => p[0]), ex.feasiblePolygon[0][0]];
+      const polyY = [...ex.feasiblePolygon.map(p => p[1]), ex.feasiblePolygon[0][1]];
+      traces.push({
+        x: polyX,
+        y: polyY,
+        fill: "toself",
+        fillcolor: isDark ? "rgba(59, 130, 246, 0.22)" : "rgba(37, 99, 235, 0.16)",
+        line: { color: "rgba(37, 99, 235, 0.45)", width: 1.5 },
+        type: "scatter",
+        mode: "lines",
+        name: "Región Factible",
+        hoverinfo: "skip"
+      });
+
+      // 2. Constraint Lines
+      const maxX = ex.xRange[1];
+      const maxY = ex.yRange[1];
+      ex.constraints.forEach(c => {
+        let lx = [], ly = [];
+        if (Math.abs(c.a2) > 1e-6) {
+          lx = [0, maxX];
+          ly = lx.map(x => (c.rhs - c.a1 * x) / c.a2);
+        } else {
+          const xConst = c.rhs / c.a1;
+          lx = [xConst, xConst];
+          ly = [0, maxY];
+        }
+        traces.push({
+          x: lx,
+          y: ly,
+          mode: "lines",
+          name: c.name.replace(/^[^\w\s]+\s*/, ""),
+          line: { color: c.color, width: 2.5, dash: c.type === ">=" ? "solid" : "dash" },
+          hovertemplate: `<b>${c.name}</b><br>${c.limit}<extra></extra>`
+        });
+      });
+
+      // 3. Special Multiple Optimal Segment (Exercise 3)
+      if (ex.specialSegment) {
+        traces.push({
+          x: ex.specialSegment.map(p => p[0]),
+          y: ex.specialSegment.map(p => p[1]),
+          mode: "lines",
+          name: "Segmento Óptimo (Z = $1,200)",
+          line: { color: "#eab308", width: 6 },
+          hovertemplate: "<b>Infinitas Soluciones Óptimas</b><br>Z = $1,200 USD<extra></extra>"
+        });
+      }
+
+      // 4. Iso-profit line for current (simX1, simX2)
+      if (document.getElementById("toggle-isoprofit").checked) {
+        const zCur = ex.c1 * simX1 + ex.c2 * simX2;
+        if (zCur > 0) {
+          const ix = [0, zCur / ex.c1];
+          const iy = [zCur / ex.c2, 0];
+          traces.push({
+            x: ix,
+            y: iy,
+            mode: "lines",
+            name: `Iso-Utilidad Z = $${zCur.toLocaleString()}`,
+            line: { color: "#9333ea", width: 2, dash: "dot" },
+            hovertemplate: `<b>Recta Iso-Utilidad</b><br>Z = $${zCur.toLocaleString()} USD<extra></extra>`
+          });
+        }
+      }
+
+      // 5. Vertices Markers
+      const nonOptVertices = ex.vertices.filter(v => !v.optimal);
+      const optVertices = ex.vertices.filter(v => v.optimal);
+
+      if (nonOptVertices.length) {
+        traces.push({
+          x: nonOptVertices.map(v => v.x),
+          y: nonOptVertices.map(v => v.y),
+          text: nonOptVertices.map(v => v.label),
+          customdata: nonOptVertices.map(v => v.z),
+          mode: "markers+text",
+          textposition: "top right",
+          textfont: { size: 11, color: textColor },
+          marker: { size: 8, color: isDark ? "#cbd5e1" : "#1e293b", line: { width: 1.5, color: bgPaper } },
+          name: "Vértices Factibles",
+          hovertemplate: "<b>Vértice %{text}</b><br>Utilidad: %{customdata}<extra></extra>"
+        });
+      }
+
+      if (optVertices.length) {
+        traces.push({
+          x: optVertices.map(v => v.x),
+          y: optVertices.map(v => v.y),
+          text: optVertices.map(v => `${v.label} ★`),
+          customdata: optVertices.map(v => v.z),
+          mode: "markers+text",
+          textposition: "top right",
+          textfont: { size: 12, color: "#16a34a", family: "Roboto, sans-serif" },
+          marker: { size: 13, color: "#16a34a", symbol: "diamond", line: { width: 2, color: "#ffffff" } },
+          name: "Punto Óptimo",
+          hovertemplate: "<b>🏆 ÓPTIMO %{text}</b><br>Utilidad Máxima: %{customdata}<extra></extra>"
+        });
+      }
+
+      // 6. Interactive Simulator Point Marker
+      const zSim = ex.c1 * simX1 + ex.c2 * simX2;
+      traces.push({
+        x: [simX1],
+        y: [simX2],
+        mode: "markers",
+        marker: { size: 14, color: "#f59e0b", symbol: "circle-open-dot", line: { width: 3, color: "#f59e0b" } },
+        name: `Simulador (${simX1}, ${simX2})`,
+        hovertemplate: `<b>Punto Simulado (${simX1}, ${simX2})</b><br>Z = $${zSim.toLocaleString()} USD<extra></extra>`
+      });
+
+      const layout = {
+        paper_bgcolor: bgPaper,
+        plot_bgcolor: bgPlot,
+        font: { family: "Roboto, sans-serif", color: textColor },
+        margin: { l: 55, r: 20, t: 25, b: 50 },
+        xaxis: {
+          title: `x₁ (${ex.x1Name})`,
+          range: [-maxX * 0.04, maxX],
+          gridcolor: gridColor,
+          zerolinecolor: isDark ? "#475569" : "#94a3b8",
+          zerolinewidth: 1.5
+        },
+        yaxis: {
+          title: `x₂ (${ex.x2Name})`,
+          range: [-maxY * 0.05, maxY],
+          gridcolor: gridColor,
+          zerolinecolor: isDark ? "#475569" : "#94a3b8",
+          zerolinewidth: 1.5
+        },
+        legend: {
+          orientation: "h",
+          y: -0.18,
+          x: 0.5,
+          xanchor: "center",
+          font: { size: 11 }
+        },
+        hovermode: "closest"
+      };
+
+      Plotly.react("plotly-canvas", traces, layout, { responsive: true, displaylogo: false });
+    }
+
+    function resetPlotZoom() {
+      const ex = EXERCISES[currentExerciseIndex];
+      Plotly.relayout("plotly-canvas", {
+        "xaxis.range": [-ex.xRange[1] * 0.04, ex.xRange[1]],
+        "yaxis.range": [-ex.yRange[1] * 0.05, ex.yRange[1]]
+      });
+    }
+
+    // =========================================================================
+    // UTILITIES (MODAL, COPY, TOAST)
+    // =========================================================================
+    function openCoverModal() {
+      const m = document.getElementById("cover-modal");
+      m.classList.remove("hidden");
+      m.classList.add("flex");
+      renderMath(m);
+    }
+
+    function closeCoverModal() {
+      const m = document.getElementById("cover-modal");
+      m.classList.add("hidden");
+      m.classList.remove("flex");
+    }
+
+    function copyPythonCode() {
+      const code = EXERCISES[currentExerciseIndex].pythonCode;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast("Código Python copiado al portapapeles");
+      });
+    }
+
+    function showToast(msg) {
+      const sb = document.getElementById("md-snackbar");
+      document.getElementById("snackbar-text").textContent = msg;
+      sb.classList.add("show");
+      setTimeout(() => sb.classList.remove("show"), 2600);
+    }
+
+    // Boot
+    initApp();
+  </script>
+</body>
+</html>
